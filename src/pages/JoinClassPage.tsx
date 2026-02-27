@@ -81,7 +81,7 @@ export default function JoinClassPage() {
 						</p>
 						<button
 							type="button"
-							onClick={() => navigate("/login")}
+							onClick={() => navigate("/login", { state: { redirectTo: "/join-class" } })}
 							className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 font-bold text-white shadow-lg transition-all border-none cursor-pointer mx-auto"
 						>
 							<LogIn className="h-5 w-5" />

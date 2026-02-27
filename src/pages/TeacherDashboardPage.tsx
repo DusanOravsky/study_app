@@ -190,7 +190,7 @@ export default function TeacherDashboardPage() {
 						</p>
 						<button
 							type="button"
-							onClick={() => navigate("/login")}
+							onClick={() => navigate("/login", { state: { redirectTo: "/teacher" } })}
 							className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-4 font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer mx-auto"
 						>
 							<LogIn className="h-5 w-5" />

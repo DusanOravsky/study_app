@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, GraduationCap, LogIn, Mail, Lock } from "lucide-react";
 import { signIn } from "../firebase/auth";
 import { isConfigured } from "../firebase/config";
 
 export default function LoginPage() {
 	const navigate = useNavigate();
+	const location = useLocation();
+	const redirectTo = (location.state as { redirectTo?: string })?.redirectTo || "/dashboard";
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
@@ -18,7 +20,7 @@ export default function LoginPage() {
 
 		try {
 			await signIn(email, password);
-			navigate("/dashboard");
+			navigate(redirectTo);
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : "Prihlásenie zlyhalo";
 			if (msg.includes("invalid-credential") || msg.includes("wrong-password")) {
