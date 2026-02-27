@@ -5,9 +5,11 @@ import {
 	BookOpen,
 	Brain,
 	Calculator,
+	Calendar,
 	CheckCircle2,
 	Clock,
 	Flame,
+	Globe,
 	Languages,
 	Sparkles,
 	Target,
@@ -26,6 +28,7 @@ import {
 	getUserSettings,
 	getMockTestResults,
 } from "../utils/progress";
+import { getStudyPlan, getStudyPlanDays } from "../utils/studyPlan";
 
 export default function DashboardPage() {
 	const navigate = useNavigate();
@@ -73,6 +76,19 @@ export default function DashboardPage() {
 		),
 		100,
 	);
+	const germanProgress = Math.min(
+		Math.round(
+			(questionHistory.filter((q) => q.phase === "solving").length / 30) *
+				100,
+		),
+		100,
+	);
+	const isBilingvalne = settings.examType === "bilingvalne";
+
+	// Study plan
+	const studyPlan = getStudyPlan();
+	const studyPlanDays = getStudyPlanDays();
+	const todayPlanDay = studyPlanDays.find((d) => d.date === today);
 
 	// Latest 3 achievements
 	const latestAchievements = [...gamification.achievements]
@@ -90,6 +106,9 @@ export default function DashboardPage() {
 		Award: String.fromCodePoint(0x1f3c5),
 		Crown: String.fromCodePoint(0x1f451),
 		BookOpen: String.fromCodePoint(0x1f4da),
+		Zap: String.fromCodePoint(0x26a1),
+		Moon: String.fromCodePoint(0x1f319),
+		Sun: String.fromCodePoint(0x2600),
 	};
 
 	useEffect(() => {
@@ -228,7 +247,7 @@ export default function DashboardPage() {
 					<h2 className="text-lg font-extrabold text-gray-800 mb-4">
 						Predmety
 					</h2>
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+					<div className={`grid grid-cols-1 ${isBilingvalne ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-4`}>
 						<SubjectCard
 							subject="Matematika"
 							icon={Calculator}
@@ -249,6 +268,18 @@ export default function DashboardPage() {
 								})
 							}
 						/>
+						{isBilingvalne && (
+							<SubjectCard
+								subject="Nemcina"
+								icon={Globe}
+								progress={germanProgress}
+								onClick={() =>
+									navigate("/learning", {
+										state: { subject: "german" },
+									})
+								}
+							/>
+						)}
 					</div>
 				</div>
 
@@ -298,6 +329,43 @@ export default function DashboardPage() {
 						<ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
 					</button>
 				</div>
+
+				{/* Study plan card */}
+				{studyPlan && (
+					<div
+						className={`mb-8 transition-all duration-700 delay-[450ms] ${
+							mounted
+								? "opacity-100 translate-y-0"
+								: "opacity-0 translate-y-6"
+						}`}
+					>
+						<button
+							type="button"
+							onClick={() => navigate("/plan")}
+							className="w-full group flex items-center gap-4 rounded-2xl bg-white p-5 shadow-lg border border-purple-100 hover:border-purple-300 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-none cursor-pointer text-left"
+						>
+							<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100">
+								<Calendar className="h-6 w-6 text-purple-600" />
+							</div>
+							<div className="flex-1">
+								<h3 className="text-base font-bold text-gray-800">
+									Študijný plán
+								</h3>
+								<p className="text-sm text-gray-400">
+									Deň {studyPlan.currentDay}/60
+									{" · "}
+									{studyPlan.completedDays} splnených
+									{todayPlanDay && !todayPlanDay.completed && (
+										<span className="text-purple-500 font-medium ml-1">
+											· Dnešný cieľ čaká
+										</span>
+									)}
+								</p>
+							</div>
+							<ArrowRight className="h-5 w-5 text-gray-300 group-hover:text-purple-500 group-hover:translate-x-1 transition-all" />
+						</button>
+					</div>
+				)}
 
 				{/* Bottom section: Achievements + Recent Activity */}
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

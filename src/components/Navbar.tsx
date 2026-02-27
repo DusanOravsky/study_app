@@ -3,32 +3,47 @@ import { Link, useLocation } from "react-router-dom";
 import {
 	BookOpen,
 	Brain,
+	Calendar,
 	Flame,
 	GraduationCap,
 	LayoutDashboard,
 	Menu,
 	MessageCircle,
+	Moon,
+	Sun,
+	Trophy,
 	User,
 	X,
 } from "lucide-react";
 import XPBar from "./XPBar";
 import { getGamification, getXPForNextLevel } from "../utils/gamification";
+import { getDarkMode, setDarkMode } from "../utils/storage";
 
 const navLinks = [
 	{ name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
 	{ name: "Ucenie", icon: BookOpen, href: "/learning" },
 	{ name: "Test", icon: Brain, href: "/test" },
+	{ name: "Rebríček", icon: Trophy, href: "/leaderboard" },
+	{ name: "Plán", icon: Calendar, href: "/plan" },
 	{ name: "Chat", icon: MessageCircle, href: "/chat" },
 	{ name: "Profil", icon: User, href: "/profile" },
 ] as const;
 
 export default function Navbar() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+	const [isDark, setIsDark] = useState(getDarkMode());
 	const location = useLocation();
 
 	const gamification = getGamification();
 	const { current: xpCurrent, needed: xpNeeded } = getXPForNextLevel(gamification);
 	const { level, streak } = gamification;
+
+	const toggleDarkMode = () => {
+		const newValue = !isDark;
+		setIsDark(newValue);
+		setDarkMode(newValue);
+		document.documentElement.classList.toggle("dark", newValue);
+	};
 
 	return (
 		<nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md shadow-md border-b-2 border-purple-200">
@@ -65,7 +80,7 @@ export default function Navbar() {
 						})}
 					</div>
 
-					{/* Right side: XP, Streak, Level */}
+					{/* Right side: XP, Streak, Level, Dark mode */}
 					<div className="hidden md:flex items-center gap-4">
 						<div className="flex items-center gap-1">
 							<Flame
@@ -85,6 +100,15 @@ export default function Navbar() {
 						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-white text-xs font-extrabold shadow-md">
 							{level}
 						</div>
+
+						<button
+							type="button"
+							onClick={toggleDarkMode}
+							className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors border-none cursor-pointer"
+							aria-label={isDark ? "Svetlý režim" : "Tmavý režim"}
+						>
+							{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+						</button>
 					</div>
 
 					{/* Mobile menu button */}
@@ -121,6 +145,14 @@ export default function Navbar() {
 						<div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 text-white text-xs font-extrabold shadow-md">
 							{level}
 						</div>
+						<button
+							type="button"
+							onClick={toggleDarkMode}
+							className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100 text-gray-500 hover:bg-gray-200 transition-colors border-none cursor-pointer"
+							aria-label={isDark ? "Svetlý režim" : "Tmavý režim"}
+						>
+							{isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+						</button>
 					</div>
 
 					<div className="px-2 py-2 space-y-1">

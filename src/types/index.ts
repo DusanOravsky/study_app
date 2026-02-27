@@ -1,7 +1,7 @@
 // ============ CORE TYPES ============
 
 export type ExamType = "8-rocne" | "4-rocne" | "bilingvalne";
-export type Subject = "math" | "slovak";
+export type Subject = "math" | "slovak" | "german";
 export type UserRole = "student" | "parent" | "teacher";
 
 export type LearningPhase = "example" | "planning" | "solving" | "feedback";
@@ -112,4 +112,64 @@ export interface ChatMessage {
 	role: "user" | "assistant";
 	content: string;
 	timestamp: string;
+}
+
+// ============ LEADERBOARD ============
+
+export interface LeaderboardEntry {
+	uid: string;
+	name: string;
+	xp: number;
+	level: number;
+	streak: number;
+	examType: ExamType;
+	updatedAt: string;
+}
+
+export type LeaderboardPeriod = "weekly" | "monthly" | "allTime";
+
+// ============ CERTIFICATES ============
+
+export interface CertificateRecord {
+	id: string;
+	testId: string;
+	studentName: string;
+	examType: ExamType;
+	subject: Subject;
+	score: number;
+	maxScore: number;
+	percentage: number;
+	issuedAt: string;
+}
+
+// ============ STUDY PLAN ============
+
+export interface StudyPlanConfig {
+	id: string;
+	examType: ExamType;
+	startDate: string;
+	totalDays: 60;
+	currentDay: number;
+	completedDays: number;
+	subjects: Subject[];
+	weakTopics: Record<string, number>;
+	createdAt: string;
+}
+
+export interface StudyPlanDay {
+	dayNumber: number;
+	date: string;
+	completed: boolean;
+	targets: StudyDayTarget[];
+	actualResults?: {
+		questionsAnswered: number;
+		correctAnswers: number;
+	};
+}
+
+export interface StudyDayTarget {
+	subject: Subject;
+	topic: string;
+	questionCount: number;
+	difficulty: 1 | 2 | 3;
 }

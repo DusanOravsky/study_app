@@ -11,7 +11,9 @@ import {
 	ChevronLeft,
 	ChevronRight,
 	Clock,
+	Download,
 	FileText,
+	Globe,
 	Languages,
 	RotateCcw,
 	Trophy,
@@ -20,9 +22,14 @@ import {
 import Timer from "../components/Timer";
 import ProgressRing from "../components/ProgressRing";
 import type { Question, QuestionResult, Subject } from "../types";
-import { generateMockTest } from "../utils/questionGenerator";
+import { generateAdaptiveQuestion, generateMockTest } from "../utils/questionGenerator";
 import { addMockTestBonus } from "../utils/gamification";
-import { getUserSettings, saveMockTestResult } from "../utils/progress";
+import { getSubjectProgress, getUserSettings, saveMockTestResult, saveCertificate } from "../utils/progress";
+import {
+	generateCertificateId,
+	generateCertificatePDF,
+	shouldAwardCertificate,
+} from "../utils/certificates";
 
 type TestStage = "setup" | "testing" | "results";
 
@@ -50,7 +57,11 @@ export default function MockTestPage() {
 
 	const startTest = () => {
 		const test = generateMockTest(subject, settings.examType);
-		setQuestions(test.questions);
+		const mastery = getSubjectProgress(subject).topicMastery;
+		const adaptiveQuestions = test.questions.map(() =>
+			generateAdaptiveQuestion(subject, settings.examType, mastery),
+		);
+		setQuestions(adaptiveQuestions);
 		setTimeLimit(test.timeLimit);
 		setCurrentIndex(0);
 		setAnswers({});
@@ -142,7 +153,7 @@ export default function MockTestPage() {
 							<p className="text-sm font-bold text-gray-600 mb-3">
 								Vyber predmet:
 							</p>
-							<div className="grid grid-cols-2 gap-3">
+							<div className={`grid ${settings.examType === "bilingvalne" ? "grid-cols-3" : "grid-cols-2"} gap-3`}>
 								<button
 									type="button"
 									onClick={() => setSubject("math")}
@@ -195,6 +206,34 @@ export default function MockTestPage() {
 										Slovenčina
 									</span>
 								</button>
+								{settings.examType === "bilingvalne" && (
+									<button
+										type="button"
+										onClick={() => setSubject("german")}
+										className={`flex items-center gap-3 rounded-2xl p-4 border-2 transition-all cursor-pointer ${
+											subject === "german"
+												? "border-emerald-400 bg-emerald-50 shadow-md"
+												: "border-gray-200 bg-white hover:border-emerald-200"
+										}`}
+									>
+										<Globe
+											className={`h-6 w-6 ${
+												subject === "german"
+													? "text-emerald-500"
+													: "text-gray-400"
+											}`}
+										/>
+										<span
+											className={`font-bold ${
+												subject === "german"
+													? "text-emerald-700"
+													: "text-gray-600"
+											}`}
+										>
+											Nemčina
+										</span>
+									</button>
+								)}
 							</div>
 						</div>
 
@@ -548,6 +587,82 @@ export default function MockTestPage() {
 									XP bonus
 								</p>
 							</div>
+						</div>
+					</div>
+
+					{/* Certificate */}
+					{shouldAwardCertificate(results.percentage) ? (
+						<div className="rounded-3xl bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 shadow-lg p-6 mb-6 text-center">
+							<Trophy className="h-10 w-10 text-yellow-500 mx-auto mb-2" />
+							<p className="text-lg font-extrabold text-yellow-700 mb-1">
+								Gratulujeme!
+							</p>
+							<p className="text-sm text-yellow-600 mb-4">
+								Získal si certifikát za tento test
+							</p>
+							<button
+								type="button"
+								onClick={() => {
+									const cert = {
+										id: generateCertificateId(),
+										testId: `test-${Date.now()}`,
+										studentName: settings.name || "Student",
+										examType: settings.examType,
+										subject,
+										score: results.score,
+										maxScore: results.maxScore,
+										percentage: results.percentage,
+										issuedAt: new Date().toISOString(),
+									};
+									saveCertificate(cert);
+									generateCertificatePDF(cert);
+								}}
+								className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-yellow-400 to-orange-400 px-6 py-3 font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer"
+							>
+								<Download className="h-5 w-5" />
+								Stiahnuť certifikát
+							</button>
+						</div>
+					) : (
+						<div className="rounded-2xl bg-gray-50 border border-gray-200 p-4 mb-6 text-center">
+							<p className="text-sm text-gray-500">
+								70% pre získanie certifikátu
+							</p>
+						</div>
+					)}
+
+					{/* Topic breakdown */}
+					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6 mb-6">
+						<h2 className="text-lg font-extrabold text-gray-800 mb-4">
+							Výsledky podľa tém
+						</h2>
+						<div className="space-y-3">
+							{(() => {
+								const topicMap: Record<string, { correct: number; total: number }> = {};
+								for (let i = 0; i < questions.length; i++) {
+									const q = questions[i];
+									const answer = answers[i];
+									if (!topicMap[q.topic]) topicMap[q.topic] = { correct: 0, total: 0 };
+									topicMap[q.topic].total++;
+									if (answer?.correct) topicMap[q.topic].correct++;
+								}
+								return Object.entries(topicMap).map(([topic, stats]) => {
+									const pct = Math.round((stats.correct / stats.total) * 100);
+									const colorClass = pct > 70 ? "text-green-600 bg-green-50 border-green-200" : pct >= 40 ? "text-yellow-600 bg-yellow-50 border-yellow-200" : "text-red-600 bg-red-50 border-red-200";
+									const barColor = pct > 70 ? "bg-green-500" : pct >= 40 ? "bg-yellow-500" : "bg-red-500";
+									return (
+										<div key={topic} className={`rounded-xl p-3 border ${colorClass}`}>
+											<div className="flex items-center justify-between mb-1">
+												<span className="text-sm font-bold">{topic}</span>
+												<span className="text-sm font-extrabold">{stats.correct}/{stats.total} ({pct}%)</span>
+											</div>
+											<div className="h-2 rounded-full bg-gray-200 overflow-hidden">
+												<div className={`h-full rounded-full ${barColor} transition-all`} style={{ width: `${pct}%` }} />
+											</div>
+										</div>
+									);
+								});
+							})()}
 						</div>
 					</div>
 

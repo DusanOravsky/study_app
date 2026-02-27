@@ -2,7 +2,7 @@
  * Progress tracking utilities
  */
 
-import type { DailyActivity, ExamType, MockTestResult, QuestionResult, Subject, SubjectProgress } from "../types";
+import type { CertificateRecord, DailyActivity, ExamType, MockTestResult, QuestionResult, Subject, SubjectProgress } from "../types";
 import { getItem, setItem } from "./storage";
 
 export function getQuestionHistory(): QuestionResult[] {
@@ -90,4 +90,16 @@ export function getUserSettings(): { examType: ExamType; name: string } {
 
 export function saveUserSettings(settings: { examType: ExamType; name: string }): void {
 	setItem("user-settings", settings);
+}
+
+// ============ CERTIFICATES ============
+
+export function getCertificates(): CertificateRecord[] {
+	return getItem<CertificateRecord[]>("certificates", []);
+}
+
+export function saveCertificate(cert: CertificateRecord): void {
+	const certs = getCertificates();
+	certs.push(cert);
+	setItem("certificates", certs);
 }

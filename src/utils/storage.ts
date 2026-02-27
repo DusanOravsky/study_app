@@ -1,7 +1,9 @@
 /**
  * LocalStorage persistence layer.
- * Easy to replace with Firebase/Supabase later.
+ * Syncs to Firestore when authenticated.
  */
+
+import { getSyncUid, syncToFirestore } from "../firebase/sync";
 
 const PREFIX = "ai-mentor:";
 
@@ -21,6 +23,10 @@ export function setItem<T>(key: string, value: T): void {
 	} catch (e) {
 		console.warn("Failed to save to localStorage:", e);
 	}
+
+	// Fire-and-forget sync to Firestore if authenticated
+	const uid = getSyncUid();
+	if (uid) syncToFirestore(uid);
 }
 
 export function removeItem(key: string): void {
@@ -32,4 +38,12 @@ export function clearAll(): void {
 	for (const k of keys) {
 		localStorage.removeItem(k);
 	}
+}
+
+export function getDarkMode(): boolean {
+	return getItem<boolean>("dark-mode", false);
+}
+
+export function setDarkMode(enabled: boolean): void {
+	setItem("dark-mode", enabled);
 }

@@ -4,6 +4,9 @@
 
 import type { Achievement, GamificationState } from "../types";
 import { getItem, setItem } from "./storage";
+import { getQuestionHistory, getUserSettings } from "./progress";
+import { updateLeaderboardEntry } from "../firebase/leaderboard";
+import { getSyncUid } from "../firebase/sync";
 
 const STORAGE_KEY = "gamification";
 
@@ -39,6 +42,12 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
 		icon: "Trophy",
 	},
 	{
+		id: "streak-100",
+		title: "Legendárny streak",
+		description: "100 dní v rade",
+		icon: "Crown",
+	},
+	{
 		id: "level-5",
 		title: "Učeň",
 		description: "Dosiahol si level 5",
@@ -62,6 +71,30 @@ const ALL_ACHIEVEMENTS: Achievement[] = [
 		description: "Odpovedal si na 100 otázok",
 		icon: "BookOpen",
 	},
+	{
+		id: "500-questions",
+		title: "Päťstovkár",
+		description: "Odpovedal si na 500 otázok",
+		icon: "BookOpen",
+	},
+	{
+		id: "speed-demon",
+		title: "Rýchlik",
+		description: "Správna odpoveď za menej ako 30 sekúnd",
+		icon: "Zap",
+	},
+	{
+		id: "night-owl",
+		title: "Nočná sova",
+		description: "Učenie po 22:00",
+		icon: "Moon",
+	},
+	{
+		id: "early-bird",
+		title: "Ranné vtáča",
+		description: "Učenie pred 7:00",
+		icon: "Sun",
+	},
 ];
 
 export function getGamification(): GamificationState {
@@ -80,7 +113,7 @@ export function saveGamification(state: GamificationState): void {
 	setItem(STORAGE_KEY, state);
 }
 
-export function addXP(correct: boolean): { state: GamificationState; xpGained: number; leveledUp: boolean; newAchievements: Achievement[] } {
+export function addXP(correct: boolean, timeSpent?: number): { state: GamificationState; xpGained: number; leveledUp: boolean; newAchievements: Achievement[] } {
 	const state = getGamification();
 	const today = new Date().toISOString().split("T")[0];
 
@@ -148,7 +181,47 @@ export function addXP(correct: boolean): { state: GamificationState; xpGained: n
 		newAchievements.push(ach);
 	}
 
+	if (state.streak >= 100 && !hasAchievement("streak-100")) {
+		const ach = { ...ALL_ACHIEVEMENTS.find((a) => a.id === "streak-100")!, unlockedAt: today };
+		state.achievements.push(ach);
+		newAchievements.push(ach);
+	}
+
+	// Question count achievements
+	const totalQuestions = getQuestionHistory().length;
+	if (totalQuestions >= 100 && !hasAchievement("100-questions")) {
+		const ach = { ...ALL_ACHIEVEMENTS.find((a) => a.id === "100-questions")!, unlockedAt: today };
+		state.achievements.push(ach);
+		newAchievements.push(ach);
+	}
+	if (totalQuestions >= 500 && !hasAchievement("500-questions")) {
+		const ach = { ...ALL_ACHIEVEMENTS.find((a) => a.id === "500-questions")!, unlockedAt: today };
+		state.achievements.push(ach);
+		newAchievements.push(ach);
+	}
+
+	// Speed demon: correct answer in under 30 seconds
+	if (correct && timeSpent !== undefined && timeSpent < 30 && !hasAchievement("speed-demon")) {
+		const ach = { ...ALL_ACHIEVEMENTS.find((a) => a.id === "speed-demon")!, unlockedAt: today };
+		state.achievements.push(ach);
+		newAchievements.push(ach);
+	}
+
+	// Time-based achievements
+	const currentHour = new Date().getHours();
+	if (currentHour >= 22 && !hasAchievement("night-owl")) {
+		const ach = { ...ALL_ACHIEVEMENTS.find((a) => a.id === "night-owl")!, unlockedAt: today };
+		state.achievements.push(ach);
+		newAchievements.push(ach);
+	}
+	if (currentHour < 7 && !hasAchievement("early-bird")) {
+		const ach = { ...ALL_ACHIEVEMENTS.find((a) => a.id === "early-bird")!, unlockedAt: today };
+		state.achievements.push(ach);
+		newAchievements.push(ach);
+	}
+
 	saveGamification(state);
+	fireLeaderboardUpdate(state);
 
 	return { state, xpGained, leveledUp, newAchievements };
 }
@@ -165,6 +238,21 @@ export function addMockTestBonus(percentage: number): void {
 	}
 
 	saveGamification(state);
+	fireLeaderboardUpdate(state);
+}
+
+function fireLeaderboardUpdate(state: GamificationState): void {
+	const uid = getSyncUid();
+	if (!uid) return;
+	const settings = getUserSettings();
+	updateLeaderboardEntry(uid, {
+		name: settings.name || "Student",
+		xp: state.xp,
+		level: state.level,
+		streak: state.streak,
+		examType: settings.examType,
+		updatedAt: new Date().toISOString(),
+	}).catch(() => {});
 }
 
 export function getXPForNextLevel(state: GamificationState): { current: number; needed: number } {

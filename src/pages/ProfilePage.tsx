@@ -4,17 +4,23 @@ import {
 	ArrowLeft,
 	Award,
 	BarChart3,
+	Bell,
 	BookOpen,
 	CheckCircle2,
 	ChevronRight,
 	Clock,
+	Download,
 	Edit3,
 	Flame,
 	GraduationCap,
 	Lock,
+	LogIn,
+	LogOut,
+	Moon,
 	RotateCcw,
 	Save,
 	Settings,
+	Sun,
 	Sparkles,
 	Star,
 	Target,
@@ -29,12 +35,17 @@ import {
 	getGamification,
 } from "../utils/gamification";
 import {
+	getCertificates,
 	getMockTestResults,
 	getQuestionHistory,
 	getUserSettings,
 	saveUserSettings,
 } from "../utils/progress";
-import { clearAll } from "../utils/storage";
+import { clearAll, getDarkMode, getItem, setDarkMode, setItem } from "../utils/storage";
+import { useAuth } from "../contexts/AuthContext";
+import { signOut } from "../firebase/auth";
+import { generateCertificatePDF } from "../utils/certificates";
+import { requestPermission, scheduleStreakReminder } from "../utils/notifications";
 
 const achievementIconMap: Record<string, string> = {
 	Star: String.fromCodePoint(0x2b50),
@@ -43,19 +54,66 @@ const achievementIconMap: Record<string, string> = {
 	Award: String.fromCodePoint(0x1f3c5),
 	Crown: String.fromCodePoint(0x1f451),
 	BookOpen: String.fromCodePoint(0x1f4da),
+	Zap: String.fromCodePoint(0x26a1),
+	Moon: String.fromCodePoint(0x1f319),
+	Sun: String.fromCodePoint(0x2600),
 };
 
 export default function ProfilePage() {
 	const navigate = useNavigate();
+	const { isAuthenticated, user } = useAuth();
 	const gamification = getGamification();
 	const settings = getUserSettings();
 	const questionHistory = getQuestionHistory();
 	const mockTestResults = getMockTestResults();
+	const certificates = getCertificates();
 
 	const [editingName, setEditingName] = useState(false);
 	const [nameInput, setNameInput] = useState(settings.name || "");
 	const [showClearConfirm, setShowClearConfirm] = useState(false);
 	const [showExamTypeChange, setShowExamTypeChange] = useState(false);
+	const [isDark, setIsDark] = useState(getDarkMode());
+
+	const [notifSettings, setNotifSettings] = useState(
+		getItem<{ enabled: boolean; time: string }>("notification-settings", {
+			enabled: false,
+			time: "18:00",
+		}),
+	);
+
+	const handleToggleNotifications = async () => {
+		if (!notifSettings.enabled) {
+			const granted = await requestPermission();
+			if (!granted) return;
+		}
+		const updated = { ...notifSettings, enabled: !notifSettings.enabled };
+		setNotifSettings(updated);
+		setItem("notification-settings", updated);
+		if (updated.enabled) {
+			scheduleStreakReminder(updated.time);
+		}
+	};
+
+	const handleNotifTimeChange = (time: string) => {
+		const updated = { ...notifSettings, time };
+		setNotifSettings(updated);
+		setItem("notification-settings", updated);
+		if (updated.enabled) {
+			scheduleStreakReminder(updated.time);
+		}
+	};
+
+	const handleSignOut = async () => {
+		await signOut();
+		navigate("/dashboard");
+	};
+
+	const toggleDarkMode = () => {
+		const newValue = !isDark;
+		setIsDark(newValue);
+		setDarkMode(newValue);
+		document.documentElement.classList.toggle("dark", newValue);
+	};
 
 	// Stats
 	const totalQuestions = questionHistory.length;
@@ -429,6 +487,50 @@ export default function ProfilePage() {
 					</div>
 				</div>
 
+				{/* Certificates */}
+				{certificates.length > 0 && (
+					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6 mb-6">
+						<h2 className="text-lg font-extrabold text-gray-800 flex items-center gap-2 mb-4">
+							<Trophy className="h-5 w-5 text-yellow-500" />
+							Certifikáty
+							<span className="text-sm font-medium text-gray-400">
+								({certificates.length})
+							</span>
+						</h2>
+						<div className="space-y-3">
+							{[...certificates].reverse().map((cert) => (
+								<div
+									key={cert.id}
+									className="flex items-center gap-3 rounded-xl bg-yellow-50 border border-yellow-200 p-3"
+								>
+									<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-yellow-100">
+										<Award className="h-5 w-5 text-yellow-600" />
+									</div>
+									<div className="flex-1 min-w-0">
+										<p className="text-sm font-bold text-gray-700">
+											{cert.subject === "math" ? "Matematika" : cert.subject === "german" ? "Nemčina" : "Slovenčina"}{" "}
+											— {cert.percentage}%
+										</p>
+										<p className="text-xs text-gray-400">
+											{new Date(cert.issuedAt).toLocaleDateString("sk-SK")}
+											{" · "}
+											{cert.id}
+										</p>
+									</div>
+									<button
+										type="button"
+										onClick={() => generateCertificatePDF(cert)}
+										className="flex items-center gap-1 rounded-lg bg-yellow-200 px-3 py-1.5 text-xs font-bold text-yellow-700 hover:bg-yellow-300 transition-colors border-none cursor-pointer"
+									>
+										<Download className="h-3.5 w-3.5" />
+										Stiahnuť
+									</button>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
+
 				{/* Mock test history */}
 				{mockTestResults.length > 0 && (
 					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6 mb-6">
@@ -498,6 +600,47 @@ export default function ProfilePage() {
 					</h2>
 
 					<div className="space-y-2">
+						{/* Auth */}
+						{isAuthenticated ? (
+							<button
+								type="button"
+								onClick={handleSignOut}
+								className="w-full flex items-center justify-between rounded-xl bg-gray-50 p-4 hover:bg-gray-100 transition-colors border-none cursor-pointer text-left"
+							>
+								<div className="flex items-center gap-3">
+									<LogOut className="h-5 w-5 text-gray-400" />
+									<div>
+										<p className="text-sm font-bold text-gray-700">
+											Odhlásiť sa
+										</p>
+										<p className="text-xs text-gray-400">
+											{user?.email}
+										</p>
+									</div>
+								</div>
+								<ChevronRight className="h-4 w-4 text-gray-400" />
+							</button>
+						) : (
+							<button
+								type="button"
+								onClick={() => navigate("/login")}
+								className="w-full flex items-center justify-between rounded-xl bg-purple-50 p-4 hover:bg-purple-100 transition-colors border-none cursor-pointer text-left"
+							>
+								<div className="flex items-center gap-3">
+									<LogIn className="h-5 w-5 text-purple-500" />
+									<div>
+										<p className="text-sm font-bold text-purple-700">
+											Prihlásiť sa
+										</p>
+										<p className="text-xs text-purple-400">
+											Pre synchronizáciu a rebríček
+										</p>
+									</div>
+								</div>
+								<ChevronRight className="h-4 w-4 text-purple-400" />
+							</button>
+						)}
+
 						<button
 							type="button"
 							onClick={() => setShowExamTypeChange(true)}
@@ -518,6 +661,68 @@ export default function ProfilePage() {
 							</div>
 							<ChevronRight className="h-4 w-4 text-gray-400" />
 						</button>
+
+						<button
+							type="button"
+							onClick={toggleDarkMode}
+							className="w-full flex items-center justify-between rounded-xl bg-gray-50 p-4 hover:bg-gray-100 transition-colors border-none cursor-pointer text-left"
+						>
+							<div className="flex items-center gap-3">
+								{isDark ? (
+									<Sun className="h-5 w-5 text-yellow-500" />
+								) : (
+									<Moon className="h-5 w-5 text-gray-400" />
+								)}
+								<div>
+									<p className="text-sm font-bold text-gray-700">
+										{isDark ? "Svetly rezim" : "Tmavy rezim"}
+									</p>
+									<p className="text-xs text-gray-400">
+										{isDark ? "Prepnut na svetlu temu" : "Prepnut na tmavu temu"}
+									</p>
+								</div>
+							</div>
+							<div className={`h-6 w-11 rounded-full transition-colors ${isDark ? "bg-purple-500" : "bg-gray-300"} relative`}>
+								<div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${isDark ? "translate-x-5" : "translate-x-0.5"}`} />
+							</div>
+						</button>
+
+						{/* Notifications */}
+						<div className="rounded-xl bg-gray-50 p-4">
+							<button
+								type="button"
+								onClick={handleToggleNotifications}
+								className="w-full flex items-center justify-between border-none cursor-pointer text-left bg-transparent p-0"
+							>
+								<div className="flex items-center gap-3">
+									<Bell className={`h-5 w-5 ${notifSettings.enabled ? "text-purple-500" : "text-gray-400"}`} />
+									<div>
+										<p className="text-sm font-bold text-gray-700">
+											Pripomienky
+										</p>
+										<p className="text-xs text-gray-400">
+											Denná pripomienka na učenie
+										</p>
+									</div>
+								</div>
+								<div className={`h-6 w-11 rounded-full transition-colors ${notifSettings.enabled ? "bg-purple-500" : "bg-gray-300"} relative`}>
+									<div className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-transform ${notifSettings.enabled ? "translate-x-5" : "translate-x-0.5"}`} />
+								</div>
+							</button>
+							{notifSettings.enabled && (
+								<div className="mt-3 flex items-center gap-3 pl-8">
+									<label className="text-xs font-medium text-gray-500">
+										Čas:
+									</label>
+									<input
+										type="time"
+										value={notifSettings.time}
+										onChange={(e) => handleNotifTimeChange(e.target.value)}
+										className="rounded-lg border border-gray-300 px-2 py-1 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-300"
+									/>
+								</div>
+							)}
+						</div>
 
 						<button
 							type="button"

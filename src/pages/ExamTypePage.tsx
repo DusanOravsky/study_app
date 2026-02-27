@@ -65,7 +65,7 @@ const examCards: ExamCard[] = [
 		subjects: [
 			"Matematika (zlomky, percentá, rovnice)",
 			"Slovenský jazyk (literatúra, gramatika, pravopis)",
-			"Nemecký jazyk (pripravujeme)",
+			"Nemecký jazyk (slovná zásoba, členy, slovesá)",
 		],
 		description:
 			"Prijímacie skúšky na bilingválne gymnázium s nemeckým jazykom. 15 otázok za 30 minút, náročnosť ako 4-ročné.",

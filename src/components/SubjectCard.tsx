@@ -23,6 +23,13 @@ const subjectColors: Record<string, { gradient: string; ring: string; iconBg: st
 		iconColor: "text-pink-600",
 		hoverBorder: "hover:border-pink-300",
 	},
+	Nemcina: {
+		gradient: "from-emerald-500 to-teal-400",
+		ring: "#10b981",
+		iconBg: "bg-emerald-100",
+		iconColor: "text-emerald-600",
+		hoverBorder: "hover:border-emerald-300",
+	},
 };
 
 const defaultColors = {

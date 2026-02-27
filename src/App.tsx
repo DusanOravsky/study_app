@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import RoleSelectionPage from "./pages/RoleSelectionPage";
@@ -8,13 +9,35 @@ import MockTestPage from "./pages/MockTestPage";
 import ChatPage from "./pages/ChatPage";
 import ProfilePage from "./pages/ProfilePage";
 import PricingPage from "./pages/PricingPage";
+import LoginPage from "./pages/LoginPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
+import StudyPlanPage from "./pages/StudyPlanPage";
+import { getDarkMode, getItem } from "./utils/storage";
+import { scheduleStreakReminder } from "./utils/notifications";
 
 // Pages without navbar (onboarding flow)
-const ONBOARDING_ROUTES = ["/", "/exam-type"];
+const ONBOARDING_ROUTES = ["/", "/exam-type", "/login"];
 
 export default function App() {
 	const location = useLocation();
 	const showNavbar = !ONBOARDING_ROUTES.includes(location.pathname);
+
+	useEffect(() => {
+		if (getDarkMode()) {
+			document.documentElement.classList.add("dark");
+		}
+	}, []);
+
+	// Schedule notification reminder if enabled
+	useEffect(() => {
+		const settings = getItem<{ enabled: boolean; time: string }>(
+			"notification-settings",
+			{ enabled: false, time: "18:00" },
+		);
+		if (settings.enabled) {
+			scheduleStreakReminder(settings.time);
+		}
+	}, []);
 
 	return (
 		<div className="min-h-screen bg-slate-50">
@@ -30,6 +53,9 @@ export default function App() {
 					<Route path="/chat" element={<ChatPage />} />
 					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/pricing" element={<PricingPage />} />
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/leaderboard" element={<LeaderboardPage />} />
+					<Route path="/plan" element={<StudyPlanPage />} />
 				</Routes>
 			</main>
 		</div>

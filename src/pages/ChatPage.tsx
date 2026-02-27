@@ -24,6 +24,7 @@ const quickSuggestions = [
 	"Ako pocitam percenta?",
 	"Co su slovne druhy?",
 	"Pomoz mi s geometriou",
+	"Pomoz mi s nemcinou",
 	"Ako sa ucit efektivne?",
 ];
 
@@ -64,6 +65,11 @@ const botResponses: BotResponse[] = [
 			"Tu su moje tipy na efektivne ucenie:\n\n1. Pravidelnost - lepsie je 20 min denne ako 3 hodiny raz za tyzden\n2. Aktivne ucenie - riesit ulohy je lepsie ako len citat\n3. Prestávky - po 25 min ucenia si daj 5 min pauzu\n4. Opakovanie - zopakuj si latku po 1 dni, 3 dnoch a 7 dnoch\n5. Vysvetli to niekomu - ak vies nieco vysvetlit, naozaj to rozumies\n\nA nezabudaj: Chyby su sucast ucenia!",
 	},
 	{
+		patterns: [/nemci/i, /nemec/i, /deutsch/i, /german/i, /artikel/i, /clen/i],
+		response:
+			"Nemcina na bilingvalne gymnazium:\n\n1. **Cleny (Artikel)**: der (muzsky), die (zensky), das (stredny)\n   - Tip: Uc sa slovicka vzdy s clenom!\n   - der Hund, die Katze, das Buch\n\n2. **Slovesa**: Kazda osoba ma iny tvar\n   - ich spiele, du spielst, er/sie spielt\n   - Pozor na nepravidlne: sein (bin, bist, ist), haben (habe, hast, hat)\n\n3. **Slovna zasoba**: Zameraj sa na temy:\n   - Skola, rodina, jedlo, zvierata, farby, cisla\n\nChces precvicit nejaku konkretnu temu?",
+	},
+	{
 		patterns: [/ahoj/i, /hello/i, /cau/i, /zdravim/i, /hey/i],
 		response:
 			"Ahoj! Rad ta vidim! Ako ti mozem dnes pomoct? Mozem ti vysvetlit matematiku, slovencinu, alebo ti dat nejake tipy na ucenie.",
@@ -76,7 +82,7 @@ const botResponses: BotResponse[] = [
 ];
 
 const defaultResponse =
-	"Hmm, na toto teraz neviem presne odpovedat, ale skus sa opytat konkretnejsie na:\n\n- Zlomky alebo percenta\n- Vybrane slova\n- Slovne druhy\n- Geometriu\n- Tipy na ucenie\n\nAlebo pouzi tlacidla s navrhmi nizsie!";
+	"Hmm, na toto teraz neviem presne odpovedat, ale skus sa opytat konkretnejsie na:\n\n- Zlomky alebo percenta\n- Vybrane slova\n- Slovne druhy\n- Geometriu\n- Nemcinu (cleny, slovesa, slovicka)\n- Tipy na ucenie\n\nAlebo pouzi tlacidla s navrhmi nizsie!";
 
 function getBotResponse(userMessage: string): string {
 	for (const entry of botResponses) {

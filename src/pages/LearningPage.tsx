@@ -17,9 +17,10 @@ import QuestionCard from "../components/QuestionCard";
 import AchievementPopup from "../components/AchievementPopup";
 import LevelUpModal from "../components/LevelUpModal";
 import type { Achievement, LearningPhase, Question, Subject } from "../types";
-import { generateQuestionSet } from "../utils/questionGenerator";
+import { generateAdaptiveQuestion } from "../utils/questionGenerator";
 import { addXP, getGamification } from "../utils/gamification";
-import { addQuestionResult, getUserSettings } from "../utils/progress";
+import { addQuestionResult, getSubjectProgress, getUserSettings } from "../utils/progress";
+import { completeStudyDay } from "../utils/studyPlan";
 
 const QUESTIONS_PER_SESSION = 10;
 
@@ -60,13 +61,20 @@ export default function LearningPage() {
 	const location = useLocation();
 
 	const settings = getUserSettings();
-	const subjectFromState =
-		(location.state as { subject?: Subject })?.subject ?? "math";
+	const locationState = location.state as {
+		subject?: Subject;
+		planDay?: number;
+	} | null;
+	const subjectFromState = locationState?.subject ?? "math";
+	const planDay = locationState?.planDay ?? null;
 
 	const [subject] = useState<Subject>(subjectFromState);
-	const [questions, setQuestions] = useState<Question[]>(() =>
-		generateQuestionSet(subjectFromState, settings.examType, QUESTIONS_PER_SESSION),
-	);
+	const [questions, setQuestions] = useState<Question[]>(() => {
+		const mastery = getSubjectProgress(subjectFromState).topicMastery;
+		return Array.from({ length: QUESTIONS_PER_SESSION }, () =>
+			generateAdaptiveQuestion(subjectFromState, settings.examType, mastery),
+		);
+	});
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [currentPhase, setCurrentPhase] = useState<LearningPhase>("example");
 	const [sessionComplete, setSessionComplete] = useState(false);
@@ -111,7 +119,7 @@ export default function LearningPage() {
 			const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
 
 			// Add XP
-			const result = addXP(correct);
+			const result = addXP(correct, timeSpent);
 			setGamification(result.state);
 			setTotalXPGained((t) => t + result.xpGained);
 			showXPAnimation(result.xpGained);
@@ -151,6 +159,13 @@ export default function LearningPage() {
 		if (currentPhase === "feedback") {
 			// Move to next question
 			if (currentIndex + 1 >= questions.length) {
+				// Complete study plan day if applicable
+				if (planDay) {
+					completeStudyDay(planDay, {
+						questionsAnswered: questions.length,
+						correctAnswers: correctCount,
+					});
+				}
 				setSessionComplete(true);
 				return;
 			}
@@ -232,11 +247,10 @@ export default function LearningPage() {
 							<button
 								type="button"
 								onClick={() => {
+									const m = getSubjectProgress(subject).topicMastery;
 									setQuestions(
-										generateQuestionSet(
-											subject,
-											settings.examType,
-											QUESTIONS_PER_SESSION,
+										Array.from({ length: QUESTIONS_PER_SESSION }, () =>
+											generateAdaptiveQuestion(subject, settings.examType, m),
 										),
 									);
 									setCurrentIndex(0);

@@ -110,3 +110,105 @@ body {
 .animate-bounce-in {
 	animation: bounce-in 0.5s ease-out;
 }
+
+/* Dark mode styles */
+.dark {
+	color-scheme: dark;
+}
+
+.dark body {
+	background-color: #0f172a;
+	color: #e2e8f0;
+}
+
+.dark .bg-white {
+	background-color: #1e293b;
+}
+
+.dark .bg-gray-50,
+.dark .bg-slate-50 {
+	background-color: #0f172a;
+}
+
+.dark .bg-gray-100 {
+	background-color: #1e293b;
+}
+
+.dark .text-gray-800 {
+	color: #f1f5f9;
+}
+
+.dark .text-gray-700 {
+	color: #e2e8f0;
+}
+
+.dark .text-gray-600 {
+	color: #cbd5e1;
+}
+
+.dark .text-gray-500 {
+	color: #94a3b8;
+}
+
+.dark .text-gray-400 {
+	color: #64748b;
+}
+
+.dark .border-gray-100,
+.dark .border-gray-200 {
+	border-color: #334155;
+}
+
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl {
+	--tw-shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+.dark .bg-gradient-to-b.from-gray-50 {
+	--tw-gradient-from: #0f172a;
+}
+
+.dark .bg-gradient-to-b.to-white {
+	--tw-gradient-to: #1e293b;
+}
+
+.dark nav {
+	background-color: rgba(15, 23, 42, 0.9);
+	border-color: #334155;
+}
+
+.dark input {
+	background-color: #1e293b;
+	color: #e2e8f0;
+	border-color: #475569;
+}
+
+.dark input::placeholder {
+	color: #64748b;
+}
+
+/* Dark mode subject-specific backgrounds */
+.dark .bg-blue-50,
+.dark .bg-pink-50,
+.dark .bg-green-50,
+.dark .bg-yellow-50,
+.dark .bg-purple-50,
+.dark .bg-orange-50,
+.dark .bg-red-50,
+.dark .bg-emerald-50,
+.dark .bg-teal-50,
+.dark .bg-cyan-50 {
+	opacity: 0.85;
+}
+
+.dark .bg-blue-100,
+.dark .bg-pink-100,
+.dark .bg-green-100,
+.dark .bg-yellow-100,
+.dark .bg-purple-100,
+.dark .bg-orange-100,
+.dark .bg-red-100,
+.dark .bg-emerald-100 {
+	opacity: 0.8;
+}
