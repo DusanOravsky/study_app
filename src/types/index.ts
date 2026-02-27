@@ -1,0 +1,115 @@
+// ============ CORE TYPES ============
+
+export type ExamType = "8-rocne" | "4-rocne" | "bilingvalne";
+export type Subject = "math" | "slovak";
+export type UserRole = "student" | "parent" | "teacher";
+
+export type LearningPhase = "example" | "planning" | "solving" | "feedback";
+
+export interface UserProfile {
+	id: string;
+	name: string;
+	role: UserRole;
+	examType: ExamType;
+	subjects: Subject[];
+	createdAt: string;
+}
+
+// ============ GAMIFICATION ============
+
+export interface GamificationState {
+	xp: number;
+	level: number;
+	streak: number;
+	longestStreak: number;
+	points: number;
+	lastActiveDate: string;
+	achievements: Achievement[];
+}
+
+export interface Achievement {
+	id: string;
+	title: string;
+	description: string;
+	icon: string;
+	unlockedAt?: string;
+}
+
+// ============ QUESTIONS ============
+
+export type QuestionType =
+	| "multiple-choice"
+	| "true-false"
+	| "fill-in"
+	| "ordering";
+
+export interface Question {
+	id: string;
+	subject: Subject;
+	examType: ExamType;
+	topic: string;
+	difficulty: 1 | 2 | 3;
+	type: QuestionType;
+	question: string;
+	options?: string[];
+	correctAnswer: string;
+	explanation: string;
+	hint?: string;
+}
+
+export interface QuestionResult {
+	questionId: string;
+	correct: boolean;
+	userAnswer: string;
+	timeSpent: number; // seconds
+	phase: LearningPhase;
+	timestamp: string;
+}
+
+// ============ MOCK TEST ============
+
+export interface MockTest {
+	id: string;
+	subject: Subject;
+	examType: ExamType;
+	questions: Question[];
+	timeLimit: number; // minutes
+	createdAt: string;
+}
+
+export interface MockTestResult {
+	testId: string;
+	answers: QuestionResult[];
+	score: number;
+	maxScore: number;
+	percentage: number;
+	timeUsed: number;
+	completedAt: string;
+}
+
+// ============ PROGRESS ============
+
+export interface SubjectProgress {
+	subject: Subject;
+	totalQuestions: number;
+	correctAnswers: number;
+	averageTime: number;
+	topicMastery: Record<string, number>; // topic -> mastery 0-100
+}
+
+export interface DailyActivity {
+	date: string;
+	questionsAnswered: number;
+	correctAnswers: number;
+	xpEarned: number;
+	timeSpent: number; // minutes
+}
+
+// ============ CHAT ============
+
+export interface ChatMessage {
+	id: string;
+	role: "user" | "assistant";
+	content: string;
+	timestamp: string;
+}
