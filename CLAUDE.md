@@ -26,7 +26,7 @@ npm run lint       # ESLint check
 - **Lucide React** - icons (use ONLY lucide-react, no other icon libs)
 - **LocalStorage** - data persistence via `src/utils/storage.ts` abstraction
 
-No backend yet. Firebase planned for later (parent will set up account).
+- **Firebase** - Auth (email/password) + Firestore (classes, schools, leaderboard, admins)
 
 ## Project Structure
 
@@ -46,8 +46,17 @@ study-app/
       ProgressRing.tsx     - Circular SVG progress ring
       AchievementPopup.tsx - Achievement toast notification
       LevelUpModal.tsx     - Level up celebration overlay
-    pages/               # 8 route pages
-      RoleSelectionPage.tsx  - / (landing, role selection)
+    firebase/            # Firebase integration
+      config.ts            - Firebase app/auth/db initialization
+      auth.ts              - Sign in, register, sign out, auth state
+      classes.ts           - Teacher class management (CRUD, assignments, submissions)
+      admin.ts             - Admin school management (CRUD, whitelist, teachers, students)
+      sync.ts              - Firestore data sync
+      migration.ts         - LocalStorage → Firestore migration
+    contexts/
+      AuthContext.tsx       - Firebase auth context provider
+    pages/               # Route pages
+      RoleSelectionPage.tsx  - / (landing, 4 role cards: student/parent/teacher/admin)
       ExamTypePage.tsx       - /exam-type (8-rocne vs 4-rocne vs bilingvalne)
       DashboardPage.tsx      - /dashboard (main hub)
       LearningPage.tsx       - /learning, /learning/:subject (4-phase learning)
@@ -55,6 +64,13 @@ study-app/
       ChatPage.tsx           - /chat (AI chat, pre-programmed for now)
       ProfilePage.tsx        - /profile (stats, achievements, settings)
       PricingPage.tsx        - /pricing (free vs premium plans)
+      LoginPage.tsx          - /login (Firebase email/password auth)
+      LeaderboardPage.tsx    - /leaderboard (XP rankings)
+      StudyPlanPage.tsx      - /plan (60-day study plan)
+      ParentDashboardPage.tsx - /parent (PIN-protected, no auth)
+      TeacherDashboardPage.tsx - /teacher (Firebase auth, class management)
+      AdminDashboardPage.tsx - /admin (Firebase auth + whitelist, school management)
+      JoinClassPage.tsx      - /join-class (student joins teacher's class)
     utils/               # Business logic
       storage.ts           - LocalStorage abstraction (PREFIX: "ai-mentor:")
       questionGenerator.ts - Smart randomized question generator
@@ -72,6 +88,10 @@ study-app/
 |------|------|--------|
 | `/` | RoleSelectionPage | NO |
 | `/exam-type` | ExamTypePage | NO |
+| `/login` | LoginPage | NO |
+| `/parent` | ParentDashboardPage | NO |
+| `/teacher` | TeacherDashboardPage | NO |
+| `/admin` | AdminDashboardPage | NO |
 | `/dashboard` | DashboardPage | YES |
 | `/learning` | LearningPage | YES |
 | `/learning/:subject` | LearningPage | YES |
@@ -79,6 +99,9 @@ study-app/
 | `/chat` | ChatPage | YES |
 | `/profile` | ProfilePage | YES |
 | `/pricing` | PricingPage | YES |
+| `/leaderboard` | LeaderboardPage | YES |
+| `/plan` | StudyPlanPage | YES |
+| `/join-class` | JoinClassPage | YES |
 
 Navbar is rendered once in App.tsx. Pages do NOT render their own Navbar.
 
@@ -139,15 +162,37 @@ All user-facing text is in **Slovak**. Key terms:
 - `ai-mentor-ultra-main.jsx` / `ai-mentor-ultra-components.jsx` - Original full app prototype
 - `ai-mentor-LOCALHOST-demo.html` - Standalone demo
 
+## Role System
+
+4 roles selected on landing page (`/`):
+- **Študent** (purple) → `/exam-type` → localStorage, no auth required
+- **Rodič** (pink) → `/parent` → PIN-protected, no Firebase auth
+- **Učiteľ** (emerald) → `/teacher` → Firebase auth required, manages classes
+- **Admin** (amber) → `/admin` → Firebase auth + Firestore whitelist (`admins/{email}`)
+
+**Role enforcement**: Admin emails in `admins` collection are blocked from teacher panel (and vice versa). One email = one role.
+
+### Firestore Collections
+
+```
+users/{uid}             - User data (synced from localStorage)
+classes/{classId}       - Teacher classes
+  /students/{uid}       - Class students with stats
+  /assignments/{id}     - Class assignments
+  /submissions/{id}     - Assignment submissions
+schools/{schoolId}      - Admin schools
+  /teachers/{uid}       - School teachers
+  /students/{uid}       - School students
+admins/{email}          - Admin whitelist (write: false, only via Console)
+leaderboard/{examType}/entries/{uid} - XP leaderboard
+```
+
 ## What's NOT Done Yet
 
-- [ ] Firebase integration (auth + Firestore) - waiting for parent to create account
 - [ ] Real AI chat API integration (currently pre-programmed responses)
 - [ ] More Slovak language questions (small bank currently)
 - [ ] More math topics beyond fractions and percentages (geometria, slovne ulohy available in presun/)
 - [ ] Integrate richer Slovak questions from presun/ (vzory, pady, pravopis i/y)
-- [ ] Parent dashboard
-- [ ] Teacher dashboard
 - [ ] Vercel deployment
 - [ ] PWA / offline support
 - [ ] Sound effects for gamification
@@ -156,6 +201,6 @@ All user-facing text is in **Slovak**. Key terms:
 
 - **Colorful and fun** - gradients, animations, playful design for ages 10-15
 - **Mobile-first** - responsive, works on phone
-- **Simple persistence** - localStorage now, Firebase later
+- **Dual persistence** - localStorage + Firebase sync
 - **No over-engineering** - keep it working and simple
 - **Slovak language** - all UI text in Slovak
