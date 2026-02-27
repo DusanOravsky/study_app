@@ -16,6 +16,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "../firebase/auth";
 import {
+	isAdmin,
 	createSchool,
 	getAdminSchool,
 	addTeacherToSchool,
@@ -37,6 +38,7 @@ export default function AdminDashboardPage() {
 	const [view, setView] = useState<AdminView>("dashboard");
 	const [school, setSchool] = useState<SchoolInfo | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [authorized, setAuthorized] = useState<boolean | null>(null);
 	const [activeTab, setActiveTab] = useState<ActiveTab>("teachers");
 
 	// School data
@@ -56,12 +58,20 @@ export default function AdminDashboardPage() {
 	const [studentEmail, setStudentEmail] = useState("");
 	const [studentExamType, setStudentExamType] = useState<ExamType>("8-rocne");
 
-	// Load school on auth
+	// Check whitelist + load school on auth
 	useEffect(() => {
 		if (!isAuthenticated || !user) return;
 		let cancelled = false;
-		getAdminSchool(user.uid)
-			.then(async (s) => {
+		(async () => {
+			try {
+				const allowed = await isAdmin(user.email ?? "");
+				if (cancelled) return;
+				setAuthorized(allowed);
+				if (!allowed) {
+					setLoading(false);
+					return;
+				}
+				const s = await getAdminSchool(user.uid);
 				if (cancelled) return;
 				if (s) {
 					setSchool(s);
@@ -74,13 +84,12 @@ export default function AdminDashboardPage() {
 						setStudents(st);
 					}
 				}
-			})
-			.catch((err) => {
+			} catch (err) {
 				console.error("Failed to load school:", err);
-			})
-			.finally(() => {
+			} finally {
 				if (!cancelled) setLoading(false);
-			});
+			}
+		})();
 		return () => {
 			cancelled = true;
 		};
@@ -167,6 +176,38 @@ export default function AdminDashboardPage() {
 		return (
 			<div className="min-h-screen bg-gradient-to-b from-amber-50 to-white flex items-center justify-center">
 				<p className="text-gray-400 animate-pulse">Načítavam...</p>
+			</div>
+		);
+	}
+
+	// Not authorized
+	if (authorized === false) {
+		return (
+			<div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+				<main className="mx-auto max-w-lg px-4 py-12 text-center">
+					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-8">
+						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-100 to-orange-100 mx-auto mb-6">
+							<Shield className="h-10 w-10 text-red-400" />
+						</div>
+						<h1 className="text-2xl font-extrabold text-gray-800 mb-2">
+							Prístup zamietnutý
+						</h1>
+						<p className="text-gray-500 mb-2">
+							Nemáš oprávnenie na admin panel.
+						</p>
+						<p className="text-sm text-gray-400 mb-6">
+							Prihlásený ako: {user?.email}
+						</p>
+						<button
+							type="button"
+							onClick={() => navigate("/")}
+							className="flex items-center justify-center gap-2 rounded-2xl bg-gray-100 px-6 py-4 font-bold text-gray-600 hover:bg-gray-200 transition-all border-none cursor-pointer mx-auto"
+						>
+							<ArrowLeft className="h-5 w-5" />
+							Späť na úvod
+						</button>
+					</div>
+				</main>
 			</div>
 		);
 	}

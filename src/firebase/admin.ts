@@ -1,6 +1,7 @@
 import {
 	collection,
 	doc,
+	getDoc,
 	getDocs,
 	setDoc,
 	deleteDoc,
@@ -9,6 +10,14 @@ import {
 } from "firebase/firestore";
 import { db } from "./config";
 import type { ExamType, SchoolInfo, SchoolStudent, SchoolTeacher } from "../types";
+
+// ============ ADMIN WHITELIST ============
+
+export async function isAdmin(email: string): Promise<boolean> {
+	if (!db) return false;
+	const snap = await getDoc(doc(db, "admins", email.toLowerCase()));
+	return snap.exists();
+}
 
 // ============ SCHOOL MANAGEMENT ============
 
