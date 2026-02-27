@@ -2,7 +2,7 @@
 
 ## What Is This
 
-AI Mentor - adaptive learning platform for Slovak students preparing for high school entrance exams (prijimacky na gymnazium). Two exam types: 8-rocne gymnazium (5th grade, age 10-11) and 4-rocne gymnazium (9th grade, age 14-15).
+AI Mentor - adaptive learning platform for Slovak students preparing for high school entrance exams (prijimacky na gymnazium). Three exam types: 8-rocne gymnazium (5th grade, age 10-11), 4-rocne gymnazium (9th grade, age 14-15), and bilingvalne gymnazium (9th grade, German bilingual, 15 questions / 30 min).
 
 Built for a student under 13 - keep things simple, fun, and budget-friendly (€0-12/year).
 
@@ -48,7 +48,7 @@ study-app/
       LevelUpModal.tsx     - Level up celebration overlay
     pages/               # 8 route pages
       RoleSelectionPage.tsx  - / (landing, role selection)
-      ExamTypePage.tsx       - /exam-type (8-rocne vs 4-rocne)
+      ExamTypePage.tsx       - /exam-type (8-rocne vs 4-rocne vs bilingvalne)
       DashboardPage.tsx      - /dashboard (main hub)
       LearningPage.tsx       - /learning, /learning/:subject (4-phase learning)
       MockTestPage.tsx       - /test (timed practice tests)
@@ -95,9 +95,10 @@ setItem("key", data);
 
 ### Question Generator
 `src/utils/questionGenerator.ts` - generates unique questions every time:
-- **5th grade math**: Simple fractions only. Results must be whole numbers or simple fractions. NO percentages. NO decimals.
-- **9th grade math**: Complex fractions + percentages. Percentage results must be WHOLE NUMBERS only. NO decimals.
+- **5th grade math (8-rocne)**: Simple fractions only. Results must be whole numbers or simple fractions. NO percentages. NO decimals.
+- **9th grade math (4-rocne & bilingvalne)**: Complex fractions + percentages. Percentage results must be WHOLE NUMBERS only. NO decimals.
 - **Slovak language**: Pre-defined question bank (vybrane slova, gramatika, literatura)
+- **Mock test config**: 8-rocne = 15q/30min, 4-rocne = 20q/45min, bilingvalne = 15q/30min
 
 ### Gamification
 `src/utils/gamification.ts` - XP system:
@@ -123,13 +124,28 @@ All user-facing text is in **Slovak**. Key terms:
 - Vybrane slova = Selected words (Slovak grammar topic)
 - Prijimacky = Entrance exams
 - Gymnazium = Grammar school / high school
+- Bilingvalne gymnazium = Bilingual gymnasium (German)
+
+## Git & Deployment
+
+- **Personal GitHub repo**: https://github.com/DusanOravsky/study_app
+- **Always commit and push here** (not to Covestro org)
+- Git identity: `Dusan Oravsky <dusan.oravsky@gmail.com>`
+
+## Reference Materials
+
+`presun/` folder contains original prototype files from son's Claude.ai project:
+- `SMART-RANDOM-QUESTIONS.js` - Rich question templates (geometria, slovne ulohy, vzory, pady, pravopis) not yet integrated
+- `ai-mentor-ultra-main.jsx` / `ai-mentor-ultra-components.jsx` - Original full app prototype
+- `ai-mentor-LOCALHOST-demo.html` - Standalone demo
 
 ## What's NOT Done Yet
 
 - [ ] Firebase integration (auth + Firestore) - waiting for parent to create account
 - [ ] Real AI chat API integration (currently pre-programmed responses)
 - [ ] More Slovak language questions (small bank currently)
-- [ ] More math topics beyond fractions and percentages
+- [ ] More math topics beyond fractions and percentages (geometria, slovne ulohy available in presun/)
+- [ ] Integrate richer Slovak questions from presun/ (vzory, pady, pravopis i/y)
 - [ ] Parent dashboard
 - [ ] Teacher dashboard
 - [ ] Vercel deployment
