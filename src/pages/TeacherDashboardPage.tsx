@@ -11,6 +11,7 @@ import {
 	LogIn,
 	LogOut,
 	Plus,
+	Shield,
 	Sparkles,
 	Target,
 	Trash2,
@@ -29,6 +30,7 @@ import {
 	deleteAssignment,
 	deleteClass,
 } from "../firebase/classes";
+import { isAdmin } from "../firebase/admin";
 import type {
 	Assignment,
 	AssignmentSubmission,
@@ -53,6 +55,7 @@ export default function TeacherDashboardPage() {
 	const [view, setView] = useState<TeacherView>("classes");
 	const [classes, setClasses] = useState<ClassInfo[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [blockedAsAdmin, setBlockedAsAdmin] = useState(false);
 
 	// Selected class state
 	const [selectedClass, setSelectedClass] = useState<ClassInfo | null>(null);
@@ -79,16 +82,23 @@ export default function TeacherDashboardPage() {
 	useEffect(() => {
 		if (!isAuthenticated || !user) return;
 		let cancelled = false;
-		getTeacherClasses(user.uid)
-			.then((data) => {
+		(async () => {
+			try {
+				const adminCheck = await isAdmin(user.email ?? "");
+				if (cancelled) return;
+				if (adminCheck) {
+					setBlockedAsAdmin(true);
+					setLoading(false);
+					return;
+				}
+				const data = await getTeacherClasses(user.uid);
 				if (!cancelled) setClasses(data);
-			})
-			.catch((err) => {
+			} catch (err) {
 				console.error("Failed to load classes:", err);
-			})
-			.finally(() => {
+			} finally {
 				if (!cancelled) setLoading(false);
-			});
+			}
+		})();
 		return () => {
 			cancelled = true;
 		};
@@ -198,6 +208,35 @@ export default function TeacherDashboardPage() {
 						>
 							<LogIn className="h-5 w-5" />
 							Prihlásiť sa
+						</button>
+					</div>
+				</main>
+			</div>
+		);
+	}
+
+	// Blocked — user is admin, not teacher
+	if (blockedAsAdmin) {
+		return (
+			<div className="min-h-screen bg-gradient-to-b from-emerald-50 to-white">
+				<main className="mx-auto max-w-lg px-4 py-12 text-center">
+					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-8">
+						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 to-yellow-100 mx-auto mb-6">
+							<Shield className="h-10 w-10 text-amber-500" />
+						</div>
+						<h1 className="text-2xl font-extrabold text-gray-800 mb-2">
+							Si admin
+						</h1>
+						<p className="text-gray-500 mb-6">
+							Tvoj účet je registrovaný ako admin. Použi admin panel.
+						</p>
+						<button
+							type="button"
+							onClick={() => navigate("/admin")}
+							className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 px-6 py-4 font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer mx-auto"
+						>
+							<Shield className="h-5 w-5" />
+							Otvoriť admin panel
 						</button>
 					</div>
 				</main>
