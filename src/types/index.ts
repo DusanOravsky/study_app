@@ -2,7 +2,7 @@
 
 export type ExamType = "8-rocne" | "4-rocne" | "bilingvalne";
 export type Subject = "math" | "slovak" | "german";
-export type UserRole = "student" | "parent" | "teacher";
+export type UserRole = "student" | "parent" | "teacher" | "admin";
 
 export type LearningPhase = "example" | "planning" | "solving" | "feedback";
 
@@ -229,4 +229,30 @@ export interface AssignmentSubmission {
 	score: number;
 	maxScore: number;
 	completedAt: string;
+}
+
+// ============ SCHOOL / ADMIN ============
+
+export interface SchoolInfo {
+	id: string;
+	name: string;
+	city: string;
+	adminUid: string;
+	adminEmail: string;
+	createdAt: string;
+}
+
+export interface SchoolTeacher {
+	uid: string;
+	name: string;
+	email: string;
+	addedAt: string;
+}
+
+export interface SchoolStudent {
+	uid: string;
+	name: string;
+	email: string;
+	examType: ExamType;
+	addedAt: string;
 }

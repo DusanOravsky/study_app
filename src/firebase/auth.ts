@@ -1,5 +1,7 @@
 import {
 	signInWithEmailAndPassword,
+	createUserWithEmailAndPassword,
+	updateProfile,
 	signOut as firebaseSignOut,
 	onAuthStateChanged,
 	type User,
@@ -12,6 +14,17 @@ export async function signIn(
 ): Promise<User> {
 	if (!auth) throw new Error("Firebase not configured");
 	const credential = await signInWithEmailAndPassword(auth, email, password);
+	return credential.user;
+}
+
+export async function register(
+	email: string,
+	password: string,
+	displayName: string,
+): Promise<User> {
+	if (!auth) throw new Error("Firebase not configured");
+	const credential = await createUserWithEmailAndPassword(auth, email, password);
+	await updateProfile(credential.user, { displayName });
 	return credential.user;
 }
 

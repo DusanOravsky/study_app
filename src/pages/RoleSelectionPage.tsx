@@ -4,6 +4,7 @@ import {
 	GraduationCap,
 	Users,
 	BookOpen,
+	Shield,
 	ArrowRight,
 	Sparkles,
 } from "lucide-react";
@@ -50,6 +51,16 @@ const roles: RoleCard[] = [
 		iconBg: "bg-emerald-100",
 		available: true,
 	},
+	{
+		role: "admin",
+		title: "Admin",
+		description:
+			"Spravuj školu, pridávaj učiteľov a žiakov do systému.",
+		icon: Shield,
+		gradient: "from-amber-500 via-yellow-400 to-orange-400",
+		iconBg: "bg-amber-100",
+		available: true,
+	},
 ];
 
 export default function RoleSelectionPage() {
@@ -78,6 +89,8 @@ export default function RoleSelectionPage() {
 			navigate("/parent");
 		} else if (card.role === "teacher") {
 			navigate("/teacher");
+		} else if (card.role === "admin") {
+			navigate("/admin");
 		} else {
 			navigate("/exam-type");
 		}
@@ -121,7 +134,7 @@ export default function RoleSelectionPage() {
 				</div>
 
 				{/* Role cards */}
-				<div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl w-full">
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl w-full">
 					{roles.map((card, index) => (
 						<button
 							key={card.role}
@@ -151,7 +164,9 @@ export default function RoleSelectionPage() {
 											? "text-purple-600"
 											: card.role === "parent"
 												? "text-pink-600"
-												: "text-emerald-600"
+												: card.role === "admin"
+													? "text-amber-600"
+													: "text-emerald-600"
 									}`}
 								/>
 							</div>
@@ -170,7 +185,9 @@ export default function RoleSelectionPage() {
 									? "text-pink-600"
 									: card.role === "teacher"
 										? "text-emerald-600"
-										: "text-purple-600"
+										: card.role === "admin"
+											? "text-amber-600"
+											: "text-purple-600"
 							}`}>
 								<span>Začať</span>
 								<ArrowRight className="h-4 w-4" />
