@@ -53,6 +53,11 @@ export async function getAdminSchool(adminUid: string): Promise<SchoolInfo | nul
 	return snap.docs[0].data() as SchoolInfo;
 }
 
+export async function deleteSchool(schoolId: string): Promise<void> {
+	if (!db) return;
+	await deleteDoc(doc(db, "schools", schoolId));
+}
+
 // ============ TEACHERS ============
 
 export async function addTeacherToSchool(

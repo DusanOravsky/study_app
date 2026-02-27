@@ -19,6 +19,7 @@ import {
 	isAdmin,
 	createSchool,
 	getAdminSchool,
+	deleteSchool,
 	addTeacherToSchool,
 	removeTeacherFromSchool,
 	getSchoolTeachers,
@@ -107,6 +108,14 @@ export default function AdminDashboardPage() {
 		setSchoolName("");
 		setSchoolCity("");
 		setView("dashboard");
+	};
+
+	const handleDeleteSchool = async () => {
+		if (!school) return;
+		await deleteSchool(school.id);
+		setSchool(null);
+		setTeachers([]);
+		setStudents([]);
 	};
 
 	const handleAddTeacher = async () => {
@@ -308,17 +317,27 @@ export default function AdminDashboardPage() {
 							</p>
 						</div>
 					</div>
-					<button
-						type="button"
-						onClick={async () => {
-							await signOut();
-							navigate("/");
-						}}
-						className="flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all border-none cursor-pointer"
-						title="Odhlásiť sa"
-					>
-						<LogOut className="h-4 w-4" />
-					</button>
+					<div className="flex items-center gap-2">
+						<button
+							type="button"
+							onClick={handleDeleteSchool}
+							className="flex items-center gap-1 rounded-xl bg-red-50 px-3 py-2.5 text-sm font-bold text-red-400 hover:bg-red-100 hover:text-red-600 transition-all border-none cursor-pointer"
+							title="Zmazať školu"
+						>
+							<Trash2 className="h-4 w-4" />
+						</button>
+						<button
+							type="button"
+							onClick={async () => {
+								await signOut();
+								navigate("/");
+							}}
+							className="flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all border-none cursor-pointer"
+							title="Odhlásiť sa"
+						>
+							<LogOut className="h-4 w-4" />
+						</button>
+					</div>
 				</div>
 
 				{/* Stats bar */}
