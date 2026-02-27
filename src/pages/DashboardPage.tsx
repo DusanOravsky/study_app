@@ -14,6 +14,7 @@ import {
 	Sparkles,
 	Target,
 	Trophy,
+	Users,
 	Zap,
 } from "lucide-react";
 import SubjectCard from "../components/SubjectCard";
@@ -285,7 +286,7 @@ export default function DashboardPage() {
 
 				{/* Quick action buttons */}
 				<div
-					className={`grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 transition-all duration-700 delay-400 ${
+					className={`grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 transition-all duration-700 delay-400 ${
 						mounted
 							? "opacity-100 translate-y-0"
 							: "opacity-0 translate-y-6"
@@ -324,6 +325,25 @@ export default function DashboardPage() {
 							</h3>
 							<p className="text-sm text-white/70">
 								Odskúšaj si test na čas
+							</p>
+						</div>
+						<ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
+					</button>
+
+					<button
+						type="button"
+						onClick={() => navigate("/join-class")}
+						className="group flex items-center gap-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 p-5 text-left shadow-lg shadow-emerald-200/40 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 border-none cursor-pointer"
+					>
+						<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20">
+							<Users className="h-6 w-6 text-white" />
+						</div>
+						<div className="flex-1">
+							<h3 className="text-base font-bold text-white">
+								Triedy
+							</h3>
+							<p className="text-sm text-white/70">
+								Pripoj sa k triede učiteľa
 							</p>
 						</div>
 						<ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />

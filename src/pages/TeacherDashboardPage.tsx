@@ -81,7 +81,9 @@ export default function TeacherDashboardPage() {
 			.then((data) => {
 				if (!cancelled) setClasses(data);
 			})
-			.catch(() => {})
+			.catch((err) => {
+				console.error("Failed to load classes:", err);
+			})
 			.finally(() => {
 				if (!cancelled) setLoading(false);
 			});

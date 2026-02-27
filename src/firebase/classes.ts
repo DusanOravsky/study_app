@@ -7,7 +7,6 @@ import {
 	deleteDoc,
 	query,
 	where,
-	orderBy,
 } from "firebase/firestore";
 import { db } from "./config";
 import type {
@@ -58,10 +57,10 @@ export async function getTeacherClasses(teacherUid: string): Promise<ClassInfo[]
 	const q = query(
 		collection(db, "classes"),
 		where("teacherUid", "==", teacherUid),
-		orderBy("createdAt", "desc"),
 	);
 	const snap = await getDocs(q);
-	return snap.docs.map((d) => d.data() as ClassInfo);
+	const classes = snap.docs.map((d) => d.data() as ClassInfo);
+	return classes.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 export async function getClassByCode(code: string): Promise<ClassInfo | null> {
@@ -182,12 +181,9 @@ export async function createAssignment(assignment: Assignment): Promise<void> {
 
 export async function getAssignments(classId: string): Promise<Assignment[]> {
 	if (!db) return [];
-	const q = query(
-		collection(db, "classes", classId, "assignments"),
-		orderBy("dueDate", "desc"),
-	);
-	const snap = await getDocs(q);
-	return snap.docs.map((d) => d.data() as Assignment);
+	const snap = await getDocs(collection(db, "classes", classId, "assignments"));
+	const assignments = snap.docs.map((d) => d.data() as Assignment);
+	return assignments.sort((a, b) => b.dueDate.localeCompare(a.dueDate));
 }
 
 export async function deleteAssignment(
