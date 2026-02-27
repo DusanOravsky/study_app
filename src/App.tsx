@@ -12,11 +12,14 @@ import PricingPage from "./pages/PricingPage";
 import LoginPage from "./pages/LoginPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import StudyPlanPage from "./pages/StudyPlanPage";
+import ParentDashboardPage from "./pages/ParentDashboardPage";
+import TeacherDashboardPage from "./pages/TeacherDashboardPage";
+import JoinClassPage from "./pages/JoinClassPage";
 import { getDarkMode, getItem } from "./utils/storage";
 import { scheduleStreakReminder } from "./utils/notifications";
 
 // Pages without navbar (onboarding flow)
-const ONBOARDING_ROUTES = ["/", "/exam-type", "/login"];
+const ONBOARDING_ROUTES = ["/", "/exam-type", "/login", "/parent", "/teacher"];
 
 export default function App() {
 	const location = useLocation();
@@ -56,6 +59,9 @@ export default function App() {
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/leaderboard" element={<LeaderboardPage />} />
 					<Route path="/plan" element={<StudyPlanPage />} />
+					<Route path="/parent" element={<ParentDashboardPage />} />
+					<Route path="/teacher" element={<TeacherDashboardPage />} />
+					<Route path="/join-class" element={<JoinClassPage />} />
 				</Routes>
 			</main>
 		</div>

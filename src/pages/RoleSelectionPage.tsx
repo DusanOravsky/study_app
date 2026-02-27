@@ -6,7 +6,6 @@ import {
 	BookOpen,
 	ArrowRight,
 	Sparkles,
-	Star,
 } from "lucide-react";
 import type { UserRole } from "../types";
 
@@ -39,7 +38,7 @@ const roles: RoleCard[] = [
 		icon: Users,
 		gradient: "from-pink-500 via-rose-400 to-orange-400",
 		iconBg: "bg-pink-100",
-		available: false,
+		available: true,
 	},
 	{
 		role: "teacher",
@@ -49,7 +48,7 @@ const roles: RoleCard[] = [
 		icon: BookOpen,
 		gradient: "from-emerald-500 via-teal-400 to-cyan-400",
 		iconBg: "bg-emerald-100",
-		available: false,
+		available: true,
 	},
 ];
 
@@ -75,7 +74,13 @@ export default function RoleSelectionPage() {
 			setToast("Čoskoro! Táto funkcia bude dostupná v budúcnosti.");
 			return;
 		}
-		navigate("/exam-type");
+		if (card.role === "parent") {
+			navigate("/parent");
+		} else if (card.role === "teacher") {
+			navigate("/teacher");
+		} else {
+			navigate("/exam-type");
+		}
 	};
 
 	return (
@@ -126,18 +131,11 @@ export default function RoleSelectionPage() {
 								mounted
 									? "opacity-100 translate-y-0"
 									: "opacity-0 translate-y-12"
-							} ${!card.available ? "opacity-80" : ""}`}
+							}`}
 							style={{
 								transitionDelay: `${200 + index * 150}ms`,
 							}}
 						>
-							{/* Coming soon badge */}
-							{!card.available && (
-								<div className="absolute top-4 right-4 rounded-full bg-gray-100 px-3 py-1 text-xs font-bold text-gray-500">
-									Čoskoro
-								</div>
-							)}
-
 							{/* Gradient top strip */}
 							<div
 								className={`h-2 w-16 rounded-full bg-gradient-to-r ${card.gradient} mb-5 transition-all duration-300 group-hover:w-24`}
@@ -167,17 +165,16 @@ export default function RoleSelectionPage() {
 							</p>
 
 							{/* CTA */}
-							{card.available ? (
-								<div className="flex items-center gap-2 text-sm font-bold text-purple-600 group-hover:gap-3 transition-all duration-300">
-									<span>Začať</span>
-									<ArrowRight className="h-4 w-4" />
-								</div>
-							) : (
-								<div className="flex items-center gap-2 text-sm font-medium text-gray-400">
-									<Star className="h-4 w-4" />
-									<span>Pripravujeme</span>
-								</div>
-							)}
+							<div className={`flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all duration-300 ${
+								card.role === "parent"
+									? "text-pink-600"
+									: card.role === "teacher"
+										? "text-emerald-600"
+										: "text-purple-600"
+							}`}>
+								<span>Začať</span>
+								<ArrowRight className="h-4 w-4" />
+							</div>
 						</button>
 					))}
 				</div>

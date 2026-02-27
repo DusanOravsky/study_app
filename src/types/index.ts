@@ -173,3 +173,60 @@ export interface StudyDayTarget {
 	questionCount: number;
 	difficulty: 1 | 2 | 3;
 }
+
+// ============ PARENT ============
+
+export interface ParentSettings {
+	pinHash: string;
+	dailyGoal: number; // min questions per day
+	createdAt: string;
+}
+
+// ============ TEACHER / CLASS ============
+
+export interface ClassInfo {
+	id: string;
+	name: string;
+	teacherUid: string;
+	teacherName: string;
+	code: string;
+	examType: ExamType;
+	createdAt: string;
+}
+
+export interface ClassStudent {
+	uid: string;
+	name: string;
+	examType: ExamType;
+	joinedAt: string;
+}
+
+export interface ClassStudentStats extends ClassStudent {
+	xp: number;
+	level: number;
+	streak: number;
+	questionsAnswered: number;
+	accuracy: number;
+}
+
+export interface Assignment {
+	id: string;
+	classId: string;
+	title: string;
+	subject: Subject;
+	topic: string;
+	questionCount: number;
+	difficulty: 1 | 2 | 3;
+	dueDate: string;
+	createdAt: string;
+}
+
+export interface AssignmentSubmission {
+	assignmentId: string;
+	studentUid: string;
+	studentName: string;
+	completed: boolean;
+	score: number;
+	maxScore: number;
+	completedAt: string;
+}
