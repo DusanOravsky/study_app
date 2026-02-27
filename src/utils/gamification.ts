@@ -6,6 +6,7 @@ import type { Achievement, GamificationState } from "../types";
 import { getItem, setItem } from "./storage";
 import { getQuestionHistory, getUserSettings } from "./progress";
 import { updateLeaderboardEntry } from "../firebase/leaderboard";
+import { updateMyStatsInClasses } from "../firebase/classes";
 import { getSyncUid } from "../firebase/sync";
 
 const STORAGE_KEY = "gamification";
@@ -252,6 +253,18 @@ function fireLeaderboardUpdate(state: GamificationState): void {
 		streak: state.streak,
 		examType: settings.examType,
 		updatedAt: new Date().toISOString(),
+	}).catch(() => {});
+
+	// Update stats in all classes the student belongs to
+	const history = getQuestionHistory();
+	const total = history.length;
+	const correct = history.filter((q) => q.correct).length;
+	updateMyStatsInClasses(uid, {
+		xp: state.xp,
+		level: state.level,
+		streak: state.streak,
+		questionsAnswered: total,
+		accuracy: total > 0 ? Math.round((correct / total) * 100) : 0,
 	}).catch(() => {});
 }
 

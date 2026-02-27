@@ -4,6 +4,7 @@ import {
 	getDoc,
 	getDocs,
 	setDoc,
+	updateDoc,
 	deleteDoc,
 	query,
 	where,
@@ -16,7 +17,6 @@ import type {
 	ClassStudent,
 	ClassStudentStats,
 	ExamType,
-	GamificationState,
 } from "../types";
 
 function generateClassCode(): string {
@@ -110,44 +110,21 @@ export async function getClassStudentStats(
 	classId: string,
 ): Promise<ClassStudentStats[]> {
 	if (!db) return [];
-	const students = await getClassStudents(classId);
-	const stats: ClassStudentStats[] = [];
-
-	for (const student of students) {
-		const userSnap = await getDoc(doc(db, "users", student.uid));
-		if (userSnap.exists()) {
-			const data = userSnap.data();
-			const gam = (data.gamification as GamificationState) ?? {
-				xp: 0,
-				level: 1,
-				streak: 0,
-			};
-			const history = (data["question-history"] ?? []) as {
-				correct: boolean;
-			}[];
-			const total = history.length;
-			const correct = history.filter((q) => q.correct).length;
-
-			stats.push({
-				...student,
-				xp: gam.xp,
-				level: gam.level,
-				streak: gam.streak,
-				questionsAnswered: total,
-				accuracy: total > 0 ? Math.round((correct / total) * 100) : 0,
-			});
-		} else {
-			stats.push({
-				...student,
-				xp: 0,
-				level: 1,
-				streak: 0,
-				questionsAnswered: 0,
-				accuracy: 0,
-			});
-		}
-	}
-
+	const snap = await getDocs(collection(db, "classes", classId, "students"));
+	const stats: ClassStudentStats[] = snap.docs.map((d) => {
+		const data = d.data();
+		return {
+			uid: data.uid,
+			name: data.name,
+			examType: data.examType,
+			joinedAt: data.joinedAt,
+			xp: data.xp ?? 0,
+			level: data.level ?? 1,
+			streak: data.streak ?? 0,
+			questionsAnswered: data.questionsAnswered ?? 0,
+			accuracy: data.accuracy ?? 0,
+		} as ClassStudentStats;
+	});
 	return stats.sort((a, b) => b.xp - a.xp);
 }
 
@@ -167,6 +144,25 @@ export async function getStudentClasses(studentUid: string): Promise<ClassInfo[]
 		}
 	}
 	return result;
+}
+
+export async function updateMyStatsInClasses(
+	studentUid: string,
+	stats: { xp: number; level: number; streak: number; questionsAnswered: number; accuracy: number },
+): Promise<void> {
+	if (!db) return;
+	try {
+		const allClasses = await getDocs(collection(db, "classes"));
+		for (const classDoc of allClasses.docs) {
+			const studentRef = doc(db, "classes", classDoc.id, "students", studentUid);
+			const studentSnap = await getDoc(studentRef);
+			if (studentSnap.exists()) {
+				await updateDoc(studentRef, stats);
+			}
+		}
+	} catch {
+		// Silently fail - stats update is best-effort
+	}
 }
 
 // ============ ASSIGNMENTS ============

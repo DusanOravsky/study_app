@@ -9,6 +9,7 @@ import {
 	Copy,
 	Flame,
 	LogIn,
+	LogOut,
 	Plus,
 	Sparkles,
 	Target,
@@ -17,6 +18,7 @@ import {
 	Users,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
+import { signOut } from "../firebase/auth";
 import {
 	createClass,
 	getTeacherClasses,
@@ -110,7 +112,8 @@ export default function TeacherDashboardPage() {
 				subs[a.id] = await getAssignmentSubmissions(cls.id, a.id);
 			}
 			setSubmissions(subs);
-		} catch {
+		} catch (err) {
+			console.error("Failed to load class details:", err);
 			setStudents([]);
 			setAssignments([]);
 		}
@@ -686,18 +689,31 @@ export default function TeacherDashboardPage() {
 								Moje triedy
 							</h1>
 							<p className="text-sm text-gray-400">
-								Správa tried a úloh
+								{user?.email}
 							</p>
 						</div>
 					</div>
-					<button
-						type="button"
-						onClick={() => setView("create-class")}
-						className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer"
-					>
-						<Plus className="h-4 w-4" />
-						Nová trieda
-					</button>
+					<div className="flex items-center gap-2">
+						<button
+							type="button"
+							onClick={() => setView("create-class")}
+							className="flex items-center gap-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2.5 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer"
+						>
+							<Plus className="h-4 w-4" />
+							Nová trieda
+						</button>
+						<button
+							type="button"
+							onClick={async () => {
+								await signOut();
+								navigate("/");
+							}}
+							className="flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all border-none cursor-pointer"
+							title="Odhlásiť sa"
+						>
+							<LogOut className="h-4 w-4" />
+						</button>
+					</div>
 				</div>
 
 				{loading ? (
