@@ -11,7 +11,7 @@ import { onAuthChange } from "../firebase/auth";
 import { isConfigured } from "../firebase/config";
 import { initSync, stopSync, syncFromFirestore } from "../firebase/sync";
 import { migrateToFirestore } from "../firebase/migration";
-import { getUserRole, setUserRole as writeUserRole } from "../firebase/userRole";
+import { getUserRole, setUserRole as writeUserRole, ensureDisplayName } from "../firebase/userRole";
 import { isAdmin } from "../firebase/admin";
 import type { ExamType, UserRole } from "../types";
 
@@ -52,6 +52,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 				try {
 					await migrateToFirestore(firebaseUser.uid);
 					await syncFromFirestore(firebaseUser.uid);
+					await ensureDisplayName(
+						firebaseUser.uid,
+						firebaseUser.displayName ?? firebaseUser.email ?? "",
+					);
 				} catch (e) {
 					console.warn("Auth sync failed:", e);
 				}

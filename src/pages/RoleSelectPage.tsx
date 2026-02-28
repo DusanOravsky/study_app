@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { isAdmin } from "../firebase/admin";
-import { generateCode, linkChildToParent, lookupParentCode } from "../firebase/userRole";
+import { generateCode, linkChildToParent, lookupParentCode, saveParentCodeDoc } from "../firebase/userRole";
 import type { UserRole } from "../types";
 
 interface RoleCard {
@@ -96,6 +96,7 @@ export default function RoleSelectPage() {
 			if (card.role === "student") {
 				const parentCode = generateCode("R-");
 				await setRole("student", { parentCode });
+				await saveParentCodeDoc(user!.uid, parentCode, user!.displayName ?? user!.email ?? "");
 				navigate("/exam-type");
 			} else if (card.role === "parent") {
 				setShowParentLink(true);
@@ -133,7 +134,8 @@ export default function RoleSelectPage() {
 			navigate("/parent");
 		} catch (err) {
 			console.error("Failed to link child:", err);
-			setLinkError("Niečo sa pokazilo. Skús to znova.");
+			const msg = err instanceof Error ? err.message : String(err);
+			setLinkError(`Chyba: ${msg}`);
 		} finally {
 			setLinkLoading(false);
 		}

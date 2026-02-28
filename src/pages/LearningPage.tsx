@@ -54,7 +54,12 @@ const phaseConfig: Record<
 	},
 };
 
-const phases: LearningPhase[] = ["example", "planning", "solving", "feedback"];
+function getPhases(_subject: Subject, questionIndex: number): LearningPhase[] {
+	// First question: show solved example, then solve + feedback
+	if (questionIndex === 0) return ["example", "solving", "feedback"];
+	// Rest: just solve + feedback
+	return ["solving", "feedback"];
+}
 
 export default function LearningPage() {
 	const navigate = useNavigate();
@@ -76,7 +81,7 @@ export default function LearningPage() {
 		);
 	});
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [currentPhase, setCurrentPhase] = useState<LearningPhase>("example");
+	const [currentPhase, setCurrentPhase] = useState<LearningPhase>(() => getPhases(subjectFromState, 0)[0]);
 	const [sessionComplete, setSessionComplete] = useState(false);
 	const [questionStartTime, setQuestionStartTime] = useState(() => Date.now());
 
@@ -101,6 +106,7 @@ export default function LearningPage() {
 	const [, setGamification] = useState(getGamification());
 
 	const currentQuestion = questions[currentIndex];
+	const phases = getPhases(subject, currentIndex);
 
 	const showXPAnimation = useCallback((amount: number) => {
 		setXpPopup({ amount, visible: true });
@@ -169,8 +175,10 @@ export default function LearningPage() {
 				setSessionComplete(true);
 				return;
 			}
-			setCurrentIndex((i) => i + 1);
-			setCurrentPhase("example");
+			const nextIndex = currentIndex + 1;
+			const nextPhases = getPhases(subject, nextIndex);
+			setCurrentIndex(nextIndex);
+			setCurrentPhase(nextPhases[0]);
 			setAnswered(false);
 			setLastCorrect(false);
 			setQuestionStartTime(Date.now());
@@ -254,7 +262,7 @@ export default function LearningPage() {
 										),
 									);
 									setCurrentIndex(0);
-									setCurrentPhase("example");
+									setCurrentPhase(getPhases(subject, 0)[0]);
 									setSessionComplete(false);
 									setCorrectCount(0);
 									setTotalXPGained(0);

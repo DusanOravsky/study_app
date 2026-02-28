@@ -141,7 +141,8 @@ export default function ParentDashboardPage() {
 			setShowLinkForm(false);
 		} catch (err) {
 			console.error("Failed to link child:", err);
-			setLinkError("Niečo sa pokazilo. Skús to znova.");
+			const msg = err instanceof Error ? err.message : String(err);
+			setLinkError(`Chyba: ${msg}`);
 		} finally {
 			setLinkLoading(false);
 		}

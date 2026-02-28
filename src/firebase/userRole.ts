@@ -44,8 +44,6 @@ export async function createUserDoc(
 	displayName: string,
 ): Promise<void> {
 	if (!db) return;
-	const snap = await getDoc(doc(db, "users", uid));
-	if (snap.exists()) return;
 	const userData: FirestoreUser = {
 		uid,
 		email,
@@ -54,7 +52,17 @@ export async function createUserDoc(
 		createdAt: new Date().toISOString(),
 		updatedAt: new Date().toISOString(),
 	};
-	await setDoc(doc(db, "users", uid), userData);
+	await setDoc(doc(db, "users", uid), userData, { merge: true });
+}
+
+export async function ensureDisplayName(uid: string, displayName: string): Promise<void> {
+	if (!db || !displayName) return;
+	const snap = await getDoc(doc(db, "users", uid));
+	if (!snap.exists()) return;
+	const data = snap.data();
+	if (!data.displayName || data.displayName === "") {
+		await updateDoc(doc(db, "users", uid), { displayName });
+	}
 }
 
 // ============ CODE GENERATION ============
@@ -74,11 +82,27 @@ export function generateCode(prefix: string): string {
 
 // ============ PARENT-CHILD LINKING ============
 
-export async function setParentCode(uid: string, code: string): Promise<void> {
+export async function setParentCode(uid: string, code: string, displayName?: string): Promise<void> {
 	if (!db) return;
+	// Save code on user doc
 	await updateDoc(doc(db, "users", uid), {
 		parentCode: code,
 		updatedAt: new Date().toISOString(),
+	});
+	// Also write to parentCodes collection for direct lookup
+	await setDoc(doc(db, "parentCodes", code.toUpperCase()), {
+		uid,
+		displayName: displayName ?? "",
+		createdAt: new Date().toISOString(),
+	});
+}
+
+export async function saveParentCodeDoc(uid: string, code: string, displayName?: string): Promise<void> {
+	if (!db) return;
+	await setDoc(doc(db, "parentCodes", code.toUpperCase()), {
+		uid,
+		displayName: displayName ?? "",
+		createdAt: new Date().toISOString(),
 	});
 }
 
@@ -86,14 +110,33 @@ export async function lookupParentCode(
 	code: string,
 ): Promise<{ uid: string; displayName: string } | null> {
 	if (!db) return null;
+	const upperCode = code.toUpperCase();
+
+	// Try parentCodes collection first (new students)
+	const snap = await getDoc(doc(db, "parentCodes", upperCode));
+	if (snap.exists()) {
+		const data = snap.data();
+		return { uid: data.uid as string, displayName: (data.displayName as string) ?? "" };
+	}
+
+	// Fallback: query users collection (old students without parentCodes doc)
 	const q = query(
 		collection(db, "users"),
-		where("parentCode", "==", code.toUpperCase()),
+		where("parentCode", "==", upperCode),
 	);
-	const snap = await getDocs(q);
-	if (snap.empty) return null;
-	const data = snap.docs[0].data();
-	return { uid: snap.docs[0].id, displayName: data.displayName ?? "" };
+	const usersSnap = await getDocs(q);
+	if (usersSnap.empty) return null;
+	const userData = usersSnap.docs[0].data();
+	const uid = usersSnap.docs[0].id;
+
+	// Backfill parentCodes doc for next time
+	await setDoc(doc(db, "parentCodes", upperCode), {
+		uid,
+		displayName: userData.displayName ?? "",
+		createdAt: new Date().toISOString(),
+	});
+
+	return { uid, displayName: (userData.displayName as string) ?? "" };
 }
 
 export async function linkChildToParent(
