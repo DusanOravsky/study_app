@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Building2, CheckCircle2, Users } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Users } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { getClassByCode, joinClass, getStudentClasses, leaveClass } from "../firebase/classes";
-import { lookupSchoolCode, addStudentToSchool } from "../firebase/admin";
 import { getUserSettings } from "../utils/progress";
-import type { ClassInfo, SchoolInfo } from "../types";
+import type { ClassInfo } from "../types";
 
 export default function JoinClassPage() {
 	const navigate = useNavigate();
@@ -17,7 +16,6 @@ export default function JoinClassPage() {
 	const [success, setSuccess] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [myClasses, setMyClasses] = useState<ClassInfo[]>([]);
-	const [mySchool, setMySchool] = useState<SchoolInfo | null>(null);
 
 	useEffect(() => {
 		if (!user) return;
@@ -41,31 +39,9 @@ export default function JoinClassPage() {
 		const upperCode = code.toUpperCase();
 
 		try {
-			// School code (S-XXXX)
-			if (upperCode.startsWith("S-")) {
-				const school = await lookupSchoolCode(upperCode);
-				if (!school) {
-					setError("Škola s týmto kódom neexistuje");
-					setLoading(false);
-					return;
-				}
-				await addStudentToSchool(
-					school.id,
-					settings.name || user.displayName || "Študent",
-					user.email ?? "",
-					settings.examType,
-				);
-				setSuccess(`Pripojený k škole: ${school.name}`);
-				setMySchool(school);
-				setCode("");
-				setLoading(false);
-				return;
-			}
-
-			// Class code (T-XXXX or legacy 6-char)
 			const classInfo = await getClassByCode(upperCode);
 			if (!classInfo) {
-				setError("Trieda ani škola s týmto kódom neexistuje");
+				setError("Trieda s týmto kódom neexistuje");
 				setLoading(false);
 				return;
 			}
@@ -107,10 +83,10 @@ export default function JoinClassPage() {
 				{/* Join with code */}
 				<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6 mb-6">
 					<h1 className="text-xl font-extrabold text-gray-800 mb-2">
-						Pripojiť sa
+						Pripojiť sa k triede
 					</h1>
 					<p className="text-sm text-gray-400 mb-4">
-						Zadaj kód triedy (T-XXXX) alebo školy (S-XXXX)
+						Zadaj kód triedy (T-XXXX) od učiteľa
 					</p>
 
 					<div className="flex gap-3">
@@ -145,20 +121,6 @@ export default function JoinClassPage() {
 					)}
 				</div>
 
-				{/* My school */}
-				{mySchool && (
-					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6 mb-6">
-						<h2 className="text-base font-extrabold text-gray-800 flex items-center gap-2 mb-3">
-							<Building2 className="h-5 w-5 text-amber-500" />
-							Moja škola
-						</h2>
-						<div className="rounded-xl bg-amber-50 border border-amber-200 p-4">
-							<p className="text-sm font-bold text-gray-700">{mySchool.name}</p>
-							<p className="text-xs text-gray-400">{mySchool.city}</p>
-						</div>
-					</div>
-				)}
-
 				{/* My classes */}
 				<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6">
 					<h2 className="text-base font-extrabold text-gray-800 flex items-center gap-2 mb-4">
@@ -182,7 +144,7 @@ export default function JoinClassPage() {
 											{cls.name}
 										</p>
 										<p className="text-xs text-gray-400">
-											Učiteľ: {cls.teacherName} · {cls.code}
+											{cls.teacherEmail ?? cls.teacherName} · {cls.code}
 										</p>
 									</div>
 									<button

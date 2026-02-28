@@ -201,9 +201,11 @@ export interface ClassInfo {
 	name: string;
 	teacherUid: string;
 	teacherName: string;
+	teacherEmail?: string;
 	code: string;
 	examType: ExamType;
 	createdAt: string;
+	schoolId?: string;
 }
 
 export interface ClassStudent {
@@ -249,7 +251,6 @@ export interface SchoolInfo {
 	id: string;
 	name: string;
 	city: string;
-	code: string;
 	adminUid: string;
 	adminEmail: string;
 	createdAt: string;
@@ -257,15 +258,9 @@ export interface SchoolInfo {
 
 export interface SchoolTeacher {
 	uid: string;
-	name: string;
 	email: string;
-	addedAt: string;
-}
-
-export interface SchoolStudent {
-	uid: string;
-	name: string;
-	email: string;
-	examType: ExamType;
+	className: string;
+	classId: string;
+	classCode: string;
 	addedAt: string;
 }

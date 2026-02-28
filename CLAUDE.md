@@ -196,11 +196,11 @@ Original prototype files from son's Claude.ai project:
 
 ## Role System
 
-4 roles selected on landing page (`/`):
-- **Študent** (purple) → `/exam-type` → localStorage, no auth required
-- **Rodič** (pink) → `/parent` → PIN-protected, no Firebase auth
-- **Učiteľ** (emerald) → `/teacher` → Firebase auth required, manages classes
-- **Admin** (amber) → `/admin` → Firebase auth + Firestore whitelist (`admins/{email}`)
+4 roles selected on landing page (`/`). All roles require Firebase auth (email/password):
+- **Študent** (purple) → `/login` → `/role-select` → `/exam-type` → `/dashboard`
+- **Rodič** (pink) → `/login` → `/role-select` → link child via R-XXXX code → `/parent`
+- **Učiteľ** (emerald) → `/login` → `/role-select` → `/teacher` (class management)
+- **Admin** (amber) → `/login` → `/role-select` → `/admin` (requires Firestore whitelist `admins/{email}`)
 
 **Role enforcement**: Admin emails in `admins` collection are blocked from teacher panel (and vice versa). One email = one role.
 

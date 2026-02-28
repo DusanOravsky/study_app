@@ -35,6 +35,7 @@ export async function createClass(
 	teacherName: string,
 	name: string,
 	examType: ExamType,
+	options?: { teacherEmail?: string; schoolId?: string },
 ): Promise<ClassInfo> {
 	if (!db) throw new Error("Firebase not configured");
 
@@ -43,13 +44,26 @@ export async function createClass(
 		name,
 		teacherUid,
 		teacherName,
+		teacherEmail: options?.teacherEmail,
 		code: generateClassCode(),
 		examType,
 		createdAt: new Date().toISOString(),
+		schoolId: options?.schoolId,
 	};
 
 	await setDoc(doc(db, "classes", classInfo.id), classInfo);
 	return classInfo;
+}
+
+export async function getClassByTeacherEmail(email: string): Promise<ClassInfo | null> {
+	if (!db) return null;
+	const q = query(
+		collection(db, "classes"),
+		where("teacherEmail", "==", email),
+	);
+	const snap = await getDocs(q);
+	if (snap.empty) return null;
+	return snap.docs[0].data() as ClassInfo;
 }
 
 export async function getTeacherClasses(teacherUid: string): Promise<ClassInfo[]> {
