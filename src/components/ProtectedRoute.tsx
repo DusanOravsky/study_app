@@ -24,9 +24,11 @@ function roleDashboard(role: UserRole): string {
 export function ProtectedRoute({
 	children,
 	allowedRoles,
+	requireRole = true,
 }: {
 	children: React.ReactNode;
 	allowedRoles?: UserRole[];
+	requireRole?: boolean;
 }) {
 	const { isAuthenticated, loading, role, roleLoading } = useAuth();
 
@@ -42,11 +44,16 @@ export function ProtectedRoute({
 		return <Navigate to="/login" replace />;
 	}
 
-	if (!role) {
+	if (requireRole && !role) {
 		return <Navigate to="/role-select" replace />;
 	}
 
-	if (allowedRoles && !allowedRoles.includes(role)) {
+	// If user already has a role and is on role-select, redirect to dashboard
+	if (!requireRole && role) {
+		return <Navigate to={roleDashboard(role)} replace />;
+	}
+
+	if (allowedRoles && role && !allowedRoles.includes(role)) {
 		return <Navigate to={roleDashboard(role)} replace />;
 	}
 

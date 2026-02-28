@@ -83,7 +83,7 @@ export default function App() {
 					<Route path="/login" element={<PublicOnlyRoute><LoginPage /></PublicOnlyRoute>} />
 
 					{/* Role selection: auth required, no role yet */}
-					<Route path="/role-select" element={<ProtectedRoute><RoleSelectPage /></ProtectedRoute>} />
+					<Route path="/role-select" element={<ProtectedRoute requireRole={false}><RoleSelectPage /></ProtectedRoute>} />
 
 					{/* Exam type: students only */}
 					<Route path="/exam-type" element={<ProtectedRoute allowedRoles={["student"]}><ExamTypePage /></ProtectedRoute>} />

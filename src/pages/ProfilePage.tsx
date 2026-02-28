@@ -347,6 +347,34 @@ export default function ProfilePage() {
 						</div>
 					</div>
 
+					{/* Quick actions */}
+					<div className="flex items-center gap-2 mb-4">
+						{parentCode && (
+							<div className="flex items-center gap-2 rounded-xl bg-pink-50 border border-pink-200 px-3 py-2">
+								<span className="text-xs font-bold text-pink-600">Kód pre rodiča:</span>
+								<span className="text-sm font-extrabold tracking-widest text-pink-700">{parentCode}</span>
+								<button
+									type="button"
+									onClick={handleCopyParentCode}
+									className="flex items-center gap-1 rounded-md bg-pink-200 px-2 py-1 text-xs font-bold text-pink-700 hover:bg-pink-300 transition-colors border-none cursor-pointer"
+								>
+									<Copy className="h-3 w-3" />
+									{codeCopied ? "OK!" : ""}
+								</button>
+							</div>
+						)}
+						<div className="flex-1" />
+						<button
+							type="button"
+							onClick={handleSignOut}
+							className="flex items-center gap-1.5 rounded-xl bg-gray-100 px-3 py-2 text-xs font-bold text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all border-none cursor-pointer"
+							title="Odhlásiť sa"
+						>
+							<LogOut className="h-3.5 w-3.5" />
+							Odhlásiť
+						</button>
+					</div>
+
 					{/* Gamification stats row */}
 					<div className="grid grid-cols-4 gap-3">
 						<div className="rounded-xl bg-purple-50 p-3 text-center">
@@ -617,50 +645,6 @@ export default function ProfilePage() {
 					</h2>
 
 					<div className="space-y-2">
-						{/* Parent code card */}
-						{parentCode && (
-							<div className="rounded-xl bg-pink-50 border border-pink-200 p-4">
-								<div className="flex items-center justify-between">
-									<div>
-										<p className="text-xs font-bold text-pink-600">
-											Kód pre rodiča
-										</p>
-										<p className="text-2xl font-extrabold tracking-widest text-pink-700">
-											{parentCode}
-										</p>
-									</div>
-									<button
-										type="button"
-										onClick={handleCopyParentCode}
-										className="flex items-center gap-1 rounded-lg bg-pink-200 px-3 py-2 text-xs font-bold text-pink-700 hover:bg-pink-300 transition-colors border-none cursor-pointer"
-									>
-										<Copy className="h-3.5 w-3.5" />
-										{codeCopied ? "Skopírované!" : "Kopírovať"}
-									</button>
-								</div>
-							</div>
-						)}
-
-						{/* Auth */}
-						<button
-							type="button"
-							onClick={handleSignOut}
-							className="w-full flex items-center justify-between rounded-xl bg-gray-50 p-4 hover:bg-gray-100 transition-colors border-none cursor-pointer text-left"
-						>
-							<div className="flex items-center gap-3">
-								<LogOut className="h-5 w-5 text-gray-400" />
-								<div>
-									<p className="text-sm font-bold text-gray-700">
-										Odhlásiť sa
-									</p>
-									<p className="text-xs text-gray-400">
-										{user?.email}
-									</p>
-								</div>
-							</div>
-							<ChevronRight className="h-4 w-4 text-gray-400" />
-						</button>
-
 						<button
 							type="button"
 							onClick={() => setShowExamTypeChange(true)}

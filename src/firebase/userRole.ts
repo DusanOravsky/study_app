@@ -68,18 +68,7 @@ function randomCode(length: number): string {
 	return code;
 }
 
-export async function generateCode(prefix: string): Promise<string> {
-	if (!db) return `${prefix}${randomCode(4)}`;
-	// Try up to 5 times for uniqueness
-	for (let attempt = 0; attempt < 5; attempt++) {
-		const code = `${prefix}${randomCode(4)}`;
-		const q = query(
-			collection(db, "users"),
-			where("parentCode", "==", code),
-		);
-		const snap = await getDocs(q);
-		if (snap.empty) return code;
-	}
+export function generateCode(prefix: string): string {
 	return `${prefix}${randomCode(4)}`;
 }
 

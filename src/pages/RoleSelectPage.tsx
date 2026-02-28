@@ -68,6 +68,7 @@ export default function RoleSelectPage() {
 	const [mounted, setMounted] = useState(false);
 	const [showAdminCard, setShowAdminCard] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState("");
 
 	// Parent linking state
 	const [showParentLink, setShowParentLink] = useState(false);
@@ -89,10 +90,11 @@ export default function RoleSelectPage() {
 	const handleRoleSelect = async (card: RoleCard) => {
 		if (loading) return;
 		setLoading(true);
+		setError("");
 
 		try {
 			if (card.role === "student") {
-				const parentCode = await generateCode("R-");
+				const parentCode = generateCode("R-");
 				await setRole("student", { parentCode });
 				navigate("/exam-type");
 			} else if (card.role === "parent") {
@@ -108,6 +110,7 @@ export default function RoleSelectPage() {
 			}
 		} catch (err) {
 			console.error("Failed to set role:", err);
+			setError("Nepodarilo sa nastaviť rolu. Skús to znova.");
 		} finally {
 			setLoading(false);
 		}
@@ -321,6 +324,13 @@ export default function RoleSelectPage() {
 						</button>
 					))}
 				</div>
+
+				{/* Error */}
+				{error && (
+					<div className="mt-6 rounded-xl bg-red-50 border border-red-200 p-3 text-sm font-medium text-red-600 max-w-md">
+						{error}
+					</div>
+				)}
 
 				{/* Footer */}
 				<div
