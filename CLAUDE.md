@@ -52,7 +52,8 @@ study-app/
       config.ts            - Firebase app/auth/db initialization
       auth.ts              - Sign in, register, sign out, auth state
       classes.ts           - Teacher class management (CRUD, assignments, submissions)
-      admin.ts             - Admin school management (CRUD, whitelist, teachers, students)
+      admin.ts             - Admin school management (CRUD, whitelist, addTeacherWithClass)
+      userRole.ts          - Role management, parent-child linking (parentCodes collection)
       sync.ts              - Firestore data sync
       migration.ts         - LocalStorage → Firestore migration
     contexts/
@@ -61,7 +62,7 @@ study-app/
       RoleSelectionPage.tsx  - / (landing, 4 role cards: student/parent/teacher/admin)
       ExamTypePage.tsx       - /exam-type (8-rocne vs 4-rocne vs bilingvalne)
       DashboardPage.tsx      - /dashboard (main hub)
-      LearningPage.tsx       - /learning, /learning/:subject (4-phase learning)
+      LearningPage.tsx       - /learning, /learning/:subject (adaptive learning phases)
       MockTestPage.tsx       - /test (timed practice tests)
       ChatPage.tsx           - /chat (AI chat, pre-programmed for now)
       ProfilePage.tsx        - /profile (stats, achievements, settings)
@@ -69,9 +70,10 @@ study-app/
       LoginPage.tsx          - /login (Firebase email/password auth)
       LeaderboardPage.tsx    - /leaderboard (XP rankings)
       StudyPlanPage.tsx      - /plan (60-day study plan)
-      ParentDashboardPage.tsx - /parent (PIN-protected, no auth)
-      TeacherDashboardPage.tsx - /teacher (Firebase auth, class management)
-      AdminDashboardPage.tsx - /admin (Firebase auth + whitelist, school management)
+      ParentDashboardPage.tsx - /parent (Firebase auth, child linking via R-XXXX)
+      TeacherDashboardPage.tsx - /teacher (Firebase auth, admin-assigned class)
+      AdminDashboardPage.tsx - /admin (Firebase auth + whitelist, teacher+class management)
+      RoleSelectPage.tsx     - /role-select (role picker after login)
       JoinClassPage.tsx      - /join-class (student joins teacher's class)
     utils/               # Business logic
       storage.ts           - LocalStorage abstraction (PREFIX: "ai-mentor:")
@@ -144,11 +146,11 @@ setItem("key", data);
 - 100 XP per level
 - 8 achievements (first question, streaks, levels, perfect test, 100 questions)
 
-### Learning Flow (4 phases)
-1. **Priklad** (Example) - worked example with explanation
-2. **Planovanie** (Planning) - question + hints, student plans approach
-3. **Riesenie** (Solving) - student answers via QuestionCard
-4. **Spatna vazba** (Feedback) - result, explanation, XP earned
+### Learning Flow (adaptive phases)
+- **Question 1**: Príklad (solved example) → Riešenie (solve) → Spätná väzba (feedback)
+- **Question 2+**: Riešenie → Spätná väzba
+- Same flow for all subjects (math, slovak, german)
+- Plánovanie phase removed — students go straight to solving after the first example
 
 ## Language
 
@@ -199,22 +201,34 @@ Original prototype files from son's Claude.ai project:
 4 roles selected on landing page (`/`). All roles require Firebase auth (email/password):
 - **Študent** (purple) → `/login` → `/role-select` → `/exam-type` → `/dashboard`
 - **Rodič** (pink) → `/login` → `/role-select` → link child via R-XXXX code → `/parent`
-- **Učiteľ** (emerald) → `/login` → `/role-select` → `/teacher` (class management)
+- **Učiteľ** (emerald) → `/login` → `/role-select` → `/teacher` (admin-assigned class, no self-create)
 - **Admin** (amber) → `/login` → `/role-select` → `/admin` (requires Firestore whitelist `admins/{email}`)
 
 **Role enforcement**: Admin emails in `admins` collection are blocked from teacher panel (and vice versa). One email = one role.
 
+### Admin → Teacher → Class Flow
+- Admin creates teacher **with class** in one step: email + name + class name + grade (5./9./bilingválne)
+- `addTeacherWithClass()` creates both `schools/{id}/teachers/{uid}` and `classes/{classId}`
+- Teacher cannot create their own class — finds assigned class via `getClassByTeacherEmail(email)`
+- Students join via T-XXXX class code only (school codes S-XXXX removed)
+- 1 teacher = 1 class (max)
+
+### Parent-Child Linking
+- Student gets R-XXXX code on registration (stored in `parentCodes/{code}` + `users/{uid}.parentCode`)
+- Parent enters R-XXXX to link child — `lookupParentCode()` checks `parentCodes` then falls back to `users` query
+- `ensureDisplayName()` runs on every login to backfill missing names in Firestore
+
 ### Firestore Collections
 
 ```
-users/{uid}             - User data (synced from localStorage)
-classes/{classId}       - Teacher classes
+users/{uid}             - User data (synced from localStorage, displayName, role, parentCode)
+parentCodes/{code}      - Parent code lookup (R-XXXX → {uid, displayName})
+classes/{classId}       - Teacher classes (teacherEmail, schoolId, code T-XXXX)
   /students/{uid}       - Class students with stats
   /assignments/{id}     - Class assignments
   /submissions/{id}     - Assignment submissions
 schools/{schoolId}      - Admin schools
-  /teachers/{uid}       - School teachers
-  /students/{uid}       - School students
+  /teachers/{uid}       - School teachers (email, className, classId, classCode)
 admins/{email}          - Admin whitelist (write: false, only via Console)
 leaderboard/{examType}/entries/{uid} - XP leaderboard
 ```
