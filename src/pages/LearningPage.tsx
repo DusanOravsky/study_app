@@ -21,6 +21,8 @@ import { generateAdaptiveQuestion } from "../utils/questionGenerator";
 import { addXP, getGamification } from "../utils/gamification";
 import { addQuestionResult, getSubjectProgress, getUserSettings } from "../utils/progress";
 import { completeStudyDay } from "../utils/studyPlan";
+import { submitAssignment } from "../firebase/classes";
+import { useAuth } from "../contexts/AuthContext";
 
 const QUESTIONS_PER_SESSION = 10;
 
@@ -64,19 +66,33 @@ function getPhases(_subject: Subject, questionIndex: number): LearningPhase[] {
 export default function LearningPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
+	const { user } = useAuth();
 
 	const settings = getUserSettings();
 	const locationState = location.state as {
 		subject?: Subject;
 		planDay?: number;
+		assignmentId?: string;
+		classId?: string;
+		questionCount?: number;
+		difficulty?: 1 | 2 | 3;
+		topic?: string;
 	} | null;
 	const subjectFromState = locationState?.subject ?? "math";
 	const planDay = locationState?.planDay ?? null;
 
+	// Assignment mode
+	const assignmentId = locationState?.assignmentId ?? null;
+	const assignmentClassId = locationState?.classId ?? null;
+	const assignmentQuestionCount = locationState?.questionCount ?? null;
+
+	const sessionQuestionCount = assignmentQuestionCount ?? QUESTIONS_PER_SESSION;
+
 	const [subject] = useState<Subject>(subjectFromState);
+	const [assignmentSubmitted, setAssignmentSubmitted] = useState(false);
 	const [questions, setQuestions] = useState<Question[]>(() => {
 		const mastery = getSubjectProgress(subjectFromState).topicMastery;
-		return Array.from({ length: QUESTIONS_PER_SESSION }, () =>
+		return Array.from({ length: sessionQuestionCount }, () =>
 			generateAdaptiveQuestion(subjectFromState, settings.examType, mastery),
 		);
 	});
@@ -159,7 +175,7 @@ export default function LearningPage() {
 		[answered, questionStartTime, currentQuestion, showXPAnimation],
 	);
 
-	const advancePhase = () => {
+	const advancePhase = useCallback(() => {
 		const phaseIdx = phases.indexOf(currentPhase);
 
 		if (currentPhase === "feedback") {
@@ -171,6 +187,18 @@ export default function LearningPage() {
 						questionsAnswered: questions.length,
 						correctAnswers: correctCount,
 					});
+				}
+				// Submit assignment if in assignment mode
+				if (assignmentId && assignmentClassId && user) {
+					submitAssignment(assignmentClassId, {
+						assignmentId,
+						studentUid: user.uid,
+						studentName: user.displayName ?? "Študent",
+						completed: true,
+						score: correctCount,
+						maxScore: questions.length,
+						completedAt: new Date().toISOString(),
+					}).then(() => setAssignmentSubmitted(true));
 				}
 				setSessionComplete(true);
 				return;
@@ -185,7 +213,7 @@ export default function LearningPage() {
 		} else {
 			setCurrentPhase(phases[phaseIdx + 1]);
 		}
-	};
+	}, [phases, currentPhase, currentIndex, questions.length, planDay, correctCount, assignmentId, assignmentClassId, user, subject]);
 
 	if (!currentQuestion && !sessionComplete) {
 		return (
@@ -216,10 +244,14 @@ export default function LearningPage() {
 						</div>
 
 						<h1 className="text-2xl font-extrabold text-gray-800 mb-2">
-							Výborne! Relácia dokončená!
+							{assignmentId ? "Úloha odovzdaná!" : "Výborne! Relácia dokončená!"}
 						</h1>
 						<p className="text-gray-500 mb-6">
-							Skvelá práca, pokračuj v učení!
+							{assignmentId
+								? assignmentSubmitted
+									? "Tvoje výsledky boli odoslané učiteľovi."
+									: "Odosielajú sa výsledky..."
+								: "Skvelá práca, pokračuj v učení!"}
 						</p>
 
 						{/* Stats */}
@@ -252,29 +284,31 @@ export default function LearningPage() {
 
 						{/* Actions */}
 						<div className="flex flex-col gap-3">
-							<button
-								type="button"
-								onClick={() => {
-									const m = getSubjectProgress(subject).topicMastery;
-									setQuestions(
-										Array.from({ length: QUESTIONS_PER_SESSION }, () =>
-											generateAdaptiveQuestion(subject, settings.examType, m),
-										),
-									);
-									setCurrentIndex(0);
-									setCurrentPhase(getPhases(subject, 0)[0]);
-									setSessionComplete(false);
-									setCorrectCount(0);
-									setTotalXPGained(0);
-									setAnswered(false);
-									setLastCorrect(false);
-									setQuestionStartTime(Date.now());
-								}}
-								className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer"
-							>
-								<Zap className="h-5 w-5" />
-								Ďalšia relácia
-							</button>
+							{!assignmentId && (
+								<button
+									type="button"
+									onClick={() => {
+										const m = getSubjectProgress(subject).topicMastery;
+										setQuestions(
+											Array.from({ length: QUESTIONS_PER_SESSION }, () =>
+												generateAdaptiveQuestion(subject, settings.examType, m),
+											),
+										);
+										setCurrentIndex(0);
+										setCurrentPhase(getPhases(subject, 0)[0]);
+										setSessionComplete(false);
+										setCorrectCount(0);
+										setTotalXPGained(0);
+										setAnswered(false);
+										setLastCorrect(false);
+										setQuestionStartTime(Date.now());
+									}}
+									className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-4 font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer"
+								>
+									<Zap className="h-5 w-5" />
+									Ďalšia relácia
+								</button>
+							)}
 							<button
 								type="button"
 								onClick={() => navigate("/dashboard")}

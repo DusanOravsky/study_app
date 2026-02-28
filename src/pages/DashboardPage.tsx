@@ -8,6 +8,7 @@ import {
 	Calendar,
 	CheckCircle2,
 	Clock,
+	ClipboardList,
 	Flame,
 	Globe,
 	Languages,
@@ -21,7 +22,7 @@ import SubjectCard from "../components/SubjectCard";
 import StreakBadge from "../components/StreakBadge";
 import XPBar from "../components/XPBar";
 import AchievementPopup from "../components/AchievementPopup";
-import type { Achievement } from "../types";
+import type { Achievement, Subject } from "../types";
 import { getGamification, getXPForNextLevel } from "../utils/gamification";
 import {
 	getDailyActivities,
@@ -30,12 +31,39 @@ import {
 	getMockTestResults,
 } from "../utils/progress";
 import { getStudyPlan, getStudyPlanDays } from "../utils/studyPlan";
+import { useAuth } from "../contexts/AuthContext";
+import {
+	getStudentPendingAssignments,
+	type PendingAssignment,
+} from "../firebase/classes";
+
+const subjectIcons: Record<Subject, typeof Calculator> = {
+	math: Calculator,
+	slovak: Languages,
+	german: Globe,
+};
+
+const subjectLabels: Record<Subject, string> = {
+	math: "Matematika",
+	slovak: "Slovenčina",
+	german: "Nemčina",
+};
+
+const difficultyLabels: Record<number, string> = {
+	1: "Ľahká",
+	2: "Stredná",
+	3: "Ťažká",
+};
 
 export default function DashboardPage() {
 	const navigate = useNavigate();
+	const { user } = useAuth();
 	const [mounted, setMounted] = useState(false);
 	const [achievementPopup, setAchievementPopup] =
 		useState<Achievement | null>(null);
+	const [pendingAssignments, setPendingAssignments] = useState<
+		PendingAssignment[]
+	>([]);
 
 	const gamification = getGamification();
 	const xpInfo = getXPForNextLevel(gamification);
@@ -116,6 +144,11 @@ export default function DashboardPage() {
 		const timer = setTimeout(() => setMounted(true), 50);
 		return () => clearTimeout(timer);
 	}, []);
+
+	useEffect(() => {
+		if (!user) return;
+		getStudentPendingAssignments(user.uid).then(setPendingAssignments);
+	}, [user]);
 
 	const userName = settings.name || "Študent";
 
@@ -349,6 +382,69 @@ export default function DashboardPage() {
 						<ArrowRight className="h-5 w-5 text-white/70 group-hover:translate-x-1 transition-transform" />
 					</button>
 				</div>
+
+				{/* Assignments from teacher */}
+				{pendingAssignments.length > 0 && (
+					<div
+						className={`mb-8 transition-all duration-700 delay-[425ms] ${
+							mounted
+								? "opacity-100 translate-y-0"
+								: "opacity-0 translate-y-6"
+						}`}
+					>
+						<h2 className="text-lg font-extrabold text-gray-800 mb-4 flex items-center gap-2">
+							<ClipboardList className="h-5 w-5 text-emerald-500" />
+							Úlohy od učiteľa
+						</h2>
+						<div className="space-y-3">
+							{pendingAssignments.map(({ assignment, classId, className }) => {
+								const Icon = subjectIcons[assignment.subject];
+								return (
+									<div
+										key={assignment.id}
+										className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-md border border-emerald-100"
+									>
+										<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100">
+											<Icon className="h-6 w-6 text-emerald-600" />
+										</div>
+										<div className="flex-1 min-w-0">
+											<h3 className="text-sm font-bold text-gray-800 truncate">
+												{assignment.title}
+											</h3>
+											<p className="text-xs text-gray-400">
+												{className} · {subjectLabels[assignment.subject]} · {assignment.questionCount} otázok · {difficultyLabels[assignment.difficulty]}
+											</p>
+											{assignment.dueDate && (
+												<p className="text-xs text-orange-500 font-medium">
+													Do: {new Date(assignment.dueDate).toLocaleDateString("sk-SK")}
+												</p>
+											)}
+										</div>
+										<button
+											type="button"
+											onClick={() =>
+												navigate("/learning", {
+													state: {
+														subject: assignment.subject,
+														assignmentId: assignment.id,
+														classId,
+														questionCount: assignment.questionCount,
+														difficulty: assignment.difficulty,
+														topic: assignment.topic,
+													},
+												})
+											}
+											className="shrink-0 flex items-center gap-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-4 py-2 text-sm font-bold text-white shadow hover:shadow-lg transition-all border-none cursor-pointer"
+										>
+											Splniť
+											<ArrowRight className="h-4 w-4" />
+										</button>
+									</div>
+								);
+							})}
+						</div>
+					</div>
+				)}
 
 				{/* Study plan card */}
 				{studyPlan && (

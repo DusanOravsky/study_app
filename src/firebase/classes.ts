@@ -216,6 +216,39 @@ export async function submitAssignment(
 	);
 }
 
+export interface PendingAssignment {
+	assignment: Assignment;
+	classId: string;
+	className: string;
+}
+
+export async function getStudentPendingAssignments(
+	studentUid: string,
+): Promise<PendingAssignment[]> {
+	if (!db) return [];
+	const classes = await getStudentClasses(studentUid);
+	const pending: PendingAssignment[] = [];
+
+	for (const cls of classes) {
+		const assignments = await getAssignments(cls.id);
+		for (const assignment of assignments) {
+			const subKey = `${assignment.id}_${studentUid}`;
+			const subSnap = await getDoc(
+				doc(db, "classes", cls.id, "submissions", subKey),
+			);
+			if (!subSnap.exists()) {
+				pending.push({
+					assignment,
+					classId: cls.id,
+					className: cls.name,
+				});
+			}
+		}
+	}
+
+	return pending;
+}
+
 export async function getAssignmentSubmissions(
 	classId: string,
 	assignmentId: string,
