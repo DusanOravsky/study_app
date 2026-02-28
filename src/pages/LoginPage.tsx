@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { ArrowLeft, GraduationCap, LogIn, UserPlus, Mail, Lock, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { GraduationCap, LogIn, UserPlus, Mail, Lock, User } from "lucide-react";
 import { signIn, register } from "../firebase/auth";
 import { isConfigured } from "../firebase/config";
+import { createUserDoc } from "../firebase/userRole";
 
 export default function LoginPage() {
 	const navigate = useNavigate();
-	const location = useLocation();
-	const redirectTo = (location.state as { redirectTo?: string })?.redirectTo || "/dashboard";
 	const [mode, setMode] = useState<"login" | "register">("login");
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -39,11 +38,13 @@ export default function LoginPage() {
 
 		try {
 			if (mode === "register") {
-				await register(email, password, name.trim());
+				const firebaseUser = await register(email, password, name.trim());
+				await createUserDoc(firebaseUser.uid, email, name.trim());
 			} else {
 				await signIn(email, password);
 			}
-			navigate(redirectTo);
+			// AuthContext will detect the role and ProtectedRoute/PublicOnlyRoute handles redirect
+			navigate("/role-select");
 		} catch (err) {
 			const msg = err instanceof Error ? err.message : "";
 			if (msg.includes("invalid-credential") || msg.includes("wrong-password")) {
@@ -82,15 +83,8 @@ export default function LoginPage() {
 						Prihlásenie nedostupné
 					</h1>
 					<p className="text-sm text-gray-500 mb-6">
-						Firebase nie je nakonfigurovaný. Aplikácia funguje v offline režime.
+						Firebase nie je nakonfigurovaný. Aplikácia vyžaduje prihlásenie.
 					</p>
-					<button
-						type="button"
-						onClick={() => navigate("/dashboard")}
-						className="w-full rounded-2xl bg-gray-100 py-3 font-bold text-gray-600 hover:bg-gray-200 transition-colors border-none cursor-pointer"
-					>
-						Späť na Dashboard
-					</button>
 				</div>
 			</div>
 		);
@@ -99,15 +93,6 @@ export default function LoginPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-purple-50 to-white flex items-center justify-center px-4">
 			<div className="w-full max-w-sm">
-				<button
-					type="button"
-					onClick={() => navigate(-1)}
-					className="flex items-center gap-2 text-gray-500 hover:text-gray-700 font-medium mb-6 transition-colors bg-transparent border-none cursor-pointer"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					Späť
-				</button>
-
 				<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-8">
 					{/* Header */}
 					<div className="flex flex-col items-center mb-6">
@@ -119,7 +104,7 @@ export default function LoginPage() {
 						</h1>
 						<p className="text-sm text-gray-400 mt-1">
 							{mode === "login"
-								? "Prihlás sa pre synchronizáciu a rebríček"
+								? "Prihlás sa do AI Mentora"
 								: "Vytvor si účet pre ukladanie pokroku"}
 						</p>
 					</div>
@@ -248,17 +233,6 @@ export default function LoginPage() {
 							)}
 						</button>
 					</form>
-
-					{/* Continue without login */}
-					<div className="mt-6 text-center">
-						<button
-							type="button"
-							onClick={() => navigate(redirectTo)}
-							className="text-sm font-medium text-gray-400 hover:text-gray-600 transition-colors bg-transparent border-none cursor-pointer"
-						>
-							Pokračovať bez prihlásenia
-						</button>
-					</div>
 				</div>
 			</div>
 		</div>

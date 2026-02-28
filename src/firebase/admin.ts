@@ -11,6 +11,15 @@ import {
 import { db } from "./config";
 import type { ExamType, SchoolInfo, SchoolStudent, SchoolTeacher } from "../types";
 
+function generateSchoolCode(): string {
+	const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+	let code = "S-";
+	for (let i = 0; i < 4; i++) {
+		code += chars[Math.floor(Math.random() * chars.length)];
+	}
+	return code;
+}
+
 // ============ ADMIN WHITELIST ============
 
 export async function isAdmin(email: string): Promise<boolean> {
@@ -33,6 +42,7 @@ export async function createSchool(
 		id: `school-${Date.now()}`,
 		name,
 		city,
+		code: generateSchoolCode(),
 		adminUid,
 		adminEmail,
 		createdAt: new Date().toISOString(),
@@ -128,4 +138,17 @@ export async function getSchoolStudents(schoolId: string): Promise<SchoolStudent
 	const snap = await getDocs(collection(db, "schools", schoolId, "students"));
 	const students = snap.docs.map((d) => d.data() as SchoolStudent);
 	return students.sort((a, b) => b.addedAt.localeCompare(a.addedAt));
+}
+
+// ============ SCHOOL CODE LOOKUP ============
+
+export async function lookupSchoolCode(code: string): Promise<SchoolInfo | null> {
+	if (!db) return null;
+	const q = query(
+		collection(db, "schools"),
+		where("code", "==", code.toUpperCase()),
+	);
+	const snap = await getDocs(q);
+	if (snap.empty) return null;
+	return snap.docs[0].data() as SchoolInfo;
 }

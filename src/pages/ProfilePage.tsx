@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
 	ArrowLeft,
@@ -9,12 +9,12 @@ import {
 	CheckCircle2,
 	ChevronRight,
 	Clock,
+	Copy,
 	Download,
 	Edit3,
 	Flame,
 	GraduationCap,
 	Lock,
-	LogIn,
 	LogOut,
 	Moon,
 	RotateCcw,
@@ -44,6 +44,7 @@ import {
 import { clearAll, getDarkMode, getItem, setDarkMode, setItem } from "../utils/storage";
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "../firebase/auth";
+import { getChildData } from "../firebase/userRole";
 import { generateCertificatePDF } from "../utils/certificates";
 import { requestPermission, scheduleStreakReminder } from "../utils/notifications";
 
@@ -61,8 +62,24 @@ const achievementIconMap: Record<string, string> = {
 
 export default function ProfilePage() {
 	const navigate = useNavigate();
-	const { isAuthenticated, user } = useAuth();
+	const { user } = useAuth();
 	const gamification = getGamification();
+	const [parentCode, setParentCode] = useState<string | null>(null);
+	const [codeCopied, setCodeCopied] = useState(false);
+
+	useEffect(() => {
+		if (!user) return;
+		getChildData(user.uid).then((data) => {
+			if (data?.parentCode) setParentCode(data.parentCode as string);
+		}).catch(() => {});
+	}, [user]);
+
+	const handleCopyParentCode = () => {
+		if (!parentCode) return;
+		navigator.clipboard.writeText(parentCode);
+		setCodeCopied(true);
+		setTimeout(() => setCodeCopied(false), 2000);
+	};
 	const settings = getUserSettings();
 	const questionHistory = getQuestionHistory();
 	const mockTestResults = getMockTestResults();
@@ -105,7 +122,7 @@ export default function ProfilePage() {
 
 	const handleSignOut = async () => {
 		await signOut();
-		navigate("/dashboard");
+		navigate("/login");
 	};
 
 	const toggleDarkMode = () => {
@@ -600,46 +617,49 @@ export default function ProfilePage() {
 					</h2>
 
 					<div className="space-y-2">
-						{/* Auth */}
-						{isAuthenticated ? (
-							<button
-								type="button"
-								onClick={handleSignOut}
-								className="w-full flex items-center justify-between rounded-xl bg-gray-50 p-4 hover:bg-gray-100 transition-colors border-none cursor-pointer text-left"
-							>
-								<div className="flex items-center gap-3">
-									<LogOut className="h-5 w-5 text-gray-400" />
+						{/* Parent code card */}
+						{parentCode && (
+							<div className="rounded-xl bg-pink-50 border border-pink-200 p-4">
+								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-sm font-bold text-gray-700">
-											Odhlásiť sa
+										<p className="text-xs font-bold text-pink-600">
+											Kód pre rodiča
 										</p>
-										<p className="text-xs text-gray-400">
-											{user?.email}
+										<p className="text-2xl font-extrabold tracking-widest text-pink-700">
+											{parentCode}
 										</p>
 									</div>
+									<button
+										type="button"
+										onClick={handleCopyParentCode}
+										className="flex items-center gap-1 rounded-lg bg-pink-200 px-3 py-2 text-xs font-bold text-pink-700 hover:bg-pink-300 transition-colors border-none cursor-pointer"
+									>
+										<Copy className="h-3.5 w-3.5" />
+										{codeCopied ? "Skopírované!" : "Kopírovať"}
+									</button>
 								</div>
-								<ChevronRight className="h-4 w-4 text-gray-400" />
-							</button>
-						) : (
-							<button
-								type="button"
-								onClick={() => navigate("/login")}
-								className="w-full flex items-center justify-between rounded-xl bg-purple-50 p-4 hover:bg-purple-100 transition-colors border-none cursor-pointer text-left"
-							>
-								<div className="flex items-center gap-3">
-									<LogIn className="h-5 w-5 text-purple-500" />
-									<div>
-										<p className="text-sm font-bold text-purple-700">
-											Prihlásiť sa
-										</p>
-										<p className="text-xs text-purple-400">
-											Pre synchronizáciu a rebríček
-										</p>
-									</div>
-								</div>
-								<ChevronRight className="h-4 w-4 text-purple-400" />
-							</button>
+							</div>
 						)}
+
+						{/* Auth */}
+						<button
+							type="button"
+							onClick={handleSignOut}
+							className="w-full flex items-center justify-between rounded-xl bg-gray-50 p-4 hover:bg-gray-100 transition-colors border-none cursor-pointer text-left"
+						>
+							<div className="flex items-center gap-3">
+								<LogOut className="h-5 w-5 text-gray-400" />
+								<div>
+									<p className="text-sm font-bold text-gray-700">
+										Odhlásiť sa
+									</p>
+									<p className="text-xs text-gray-400">
+										{user?.email}
+									</p>
+								</div>
+							</div>
+							<ChevronRight className="h-4 w-4 text-gray-400" />
+						</button>
 
 						<button
 							type="button"
@@ -726,7 +746,7 @@ export default function ProfilePage() {
 
 						<button
 							type="button"
-							onClick={() => navigate("/")}
+							onClick={() => navigate("/role-select")}
 							className="w-full flex items-center justify-between rounded-xl bg-gray-50 p-4 hover:bg-gray-100 transition-colors border-none cursor-pointer text-left"
 						>
 							<div className="flex items-center gap-3">

@@ -4,6 +4,18 @@ export type ExamType = "8-rocne" | "4-rocne" | "bilingvalne";
 export type Subject = "math" | "slovak" | "german";
 export type UserRole = "student" | "parent" | "teacher" | "admin";
 
+export interface FirestoreUser {
+	uid: string;
+	email: string;
+	displayName: string;
+	role: UserRole | null;
+	examType?: ExamType;
+	parentCode?: string;
+	linkedChildren?: string[];
+	createdAt: string;
+	updatedAt: string;
+}
+
 export type LearningPhase = "example" | "planning" | "solving" | "feedback";
 
 export interface UserProfile {
@@ -237,6 +249,7 @@ export interface SchoolInfo {
 	id: string;
 	name: string;
 	city: string;
+	code: string;
 	adminUid: string;
 	adminEmail: string;
 	createdAt: string;

@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-	ArrowLeft,
 	BookOpen,
 	Building2,
-	LogIn,
+	Copy,
 	LogOut,
 	MapPin,
 	Plus,
-	Shield,
 	Trash2,
 	UserCheck,
 	Users,
@@ -16,7 +14,6 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { signOut } from "../firebase/auth";
 import {
-	isAdmin,
 	createSchool,
 	getAdminSchool,
 	deleteSchool,
@@ -39,8 +36,8 @@ export default function AdminDashboardPage() {
 	const [view, setView] = useState<AdminView>("dashboard");
 	const [school, setSchool] = useState<SchoolInfo | null>(null);
 	const [loading, setLoading] = useState(true);
-	const [authorized, setAuthorized] = useState<boolean | null>(null);
 	const [activeTab, setActiveTab] = useState<ActiveTab>("teachers");
+	const [copiedCode, setCopiedCode] = useState(false);
 
 	// School data
 	const [teachers, setTeachers] = useState<SchoolTeacher[]>([]);
@@ -59,19 +56,12 @@ export default function AdminDashboardPage() {
 	const [studentEmail, setStudentEmail] = useState("");
 	const [studentExamType, setStudentExamType] = useState<ExamType>("8-rocne");
 
-	// Check whitelist + load school on auth
+	// Load school data
 	useEffect(() => {
 		if (!isAuthenticated || !user) return;
 		let cancelled = false;
 		(async () => {
 			try {
-				const allowed = await isAdmin(user.email ?? "");
-				if (cancelled) return;
-				setAuthorized(allowed);
-				if (!allowed) {
-					setLoading(false);
-					return;
-				}
 				const s = await getAdminSchool(user.uid);
 				if (cancelled) return;
 				if (s) {
@@ -151,34 +141,11 @@ export default function AdminDashboardPage() {
 		setStudents((prev) => prev.filter((s) => s.uid !== uid));
 	};
 
-	// Not authenticated
-	if (!isAuthenticated) {
-		return (
-			<div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-				<main className="mx-auto max-w-lg px-4 py-12 text-center">
-					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-8">
-						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 to-yellow-100 mx-auto mb-6">
-							<Shield className="h-10 w-10 text-amber-500" />
-						</div>
-						<h1 className="text-2xl font-extrabold text-gray-800 mb-2">
-							Admin panel
-						</h1>
-						<p className="text-gray-500 mb-6">
-							Prihlásiť sa pre správu školy, učiteľov a žiakov
-						</p>
-						<button
-							type="button"
-							onClick={() => navigate("/login", { state: { redirectTo: "/admin" } })}
-							className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 px-6 py-4 font-bold text-white shadow-lg hover:shadow-xl transition-all border-none cursor-pointer mx-auto"
-						>
-							<LogIn className="h-5 w-5" />
-							Prihlásiť sa
-						</button>
-					</div>
-				</main>
-			</div>
-		);
-	}
+	const handleCopyCode = (code: string) => {
+		navigator.clipboard.writeText(code);
+		setCopiedCode(true);
+		setTimeout(() => setCopiedCode(false), 2000);
+	};
 
 	// Loading
 	if (loading) {
@@ -189,52 +156,11 @@ export default function AdminDashboardPage() {
 		);
 	}
 
-	// Not authorized
-	if (authorized === false) {
-		return (
-			<div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-				<main className="mx-auto max-w-lg px-4 py-12 text-center">
-					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-8">
-						<div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-100 to-orange-100 mx-auto mb-6">
-							<Shield className="h-10 w-10 text-red-400" />
-						</div>
-						<h1 className="text-2xl font-extrabold text-gray-800 mb-2">
-							Prístup zamietnutý
-						</h1>
-						<p className="text-gray-500 mb-2">
-							Nemáš oprávnenie na admin panel.
-						</p>
-						<p className="text-sm text-gray-400 mb-6">
-							Prihlásený ako: {user?.email}
-						</p>
-						<button
-							type="button"
-							onClick={() => navigate("/")}
-							className="flex items-center justify-center gap-2 rounded-2xl bg-gray-100 px-6 py-4 font-bold text-gray-600 hover:bg-gray-200 transition-all border-none cursor-pointer mx-auto"
-						>
-							<ArrowLeft className="h-5 w-5" />
-							Späť na úvod
-						</button>
-					</div>
-				</main>
-			</div>
-		);
-	}
-
 	// Create school form
 	if (!school || view === "create-school") {
 		return (
 			<div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
 				<main className="mx-auto max-w-lg px-4 py-8">
-					<button
-						type="button"
-						onClick={() => navigate("/")}
-						className="flex items-center gap-2 text-gray-500 hover:text-gray-700 font-medium mb-6 bg-transparent border-none cursor-pointer"
-					>
-						<ArrowLeft className="h-4 w-4" />
-						Späť
-					</button>
-
 					<div className="rounded-3xl bg-white shadow-xl border border-gray-100 p-6">
 						<div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 mb-4">
 							<Building2 className="h-7 w-7 text-amber-500" />
@@ -292,15 +218,6 @@ export default function AdminDashboardPage() {
 	return (
 		<div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
 			<main className="mx-auto max-w-2xl px-4 py-6 sm:py-8">
-				<button
-					type="button"
-					onClick={() => navigate("/")}
-					className="flex items-center gap-2 text-gray-500 hover:text-gray-700 font-medium mb-6 bg-transparent border-none cursor-pointer"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					Späť
-				</button>
-
 				{/* School header */}
 				<div className="flex items-center justify-between mb-6">
 					<div className="flex items-center gap-3">
@@ -330,7 +247,7 @@ export default function AdminDashboardPage() {
 							type="button"
 							onClick={async () => {
 								await signOut();
-								navigate("/");
+								navigate("/login");
 							}}
 							className="flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-2.5 text-sm font-bold text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-all border-none cursor-pointer"
 							title="Odhlásiť sa"
@@ -338,6 +255,26 @@ export default function AdminDashboardPage() {
 							<LogOut className="h-4 w-4" />
 						</button>
 					</div>
+				</div>
+
+				{/* School code */}
+				<div className="flex items-center gap-3 rounded-xl bg-amber-50 border border-amber-200 p-3 mb-6">
+					<div className="flex-1">
+						<p className="text-xs font-bold text-amber-600">
+							Kód školy
+						</p>
+						<p className="text-2xl font-extrabold tracking-widest text-amber-700">
+							{school.code}
+						</p>
+					</div>
+					<button
+						type="button"
+						onClick={() => handleCopyCode(school.code)}
+						className="flex items-center gap-1 rounded-lg bg-amber-200 px-3 py-2 text-xs font-bold text-amber-700 hover:bg-amber-300 transition-colors border-none cursor-pointer"
+					>
+						<Copy className="h-3.5 w-3.5" />
+						{copiedCode ? "Skopírované!" : "Kopírovať"}
+					</button>
 				</div>
 
 				{/* Stats bar */}
