@@ -32,6 +32,8 @@ npm run lint       # ESLint check
 
 ```
 study-app/
+  Testy/               # 28 real school worksheets (.docx, .doc, .pptx, .png) - source for generators
+  presun/              # Original prototype files from son's Claude.ai project
   src/
     App.tsx              # Router + layout (Navbar shown on all pages except onboarding)
     main.tsx             # Entry point with BrowserRouter
@@ -73,7 +75,8 @@ study-app/
       JoinClassPage.tsx      - /join-class (student joins teacher's class)
     utils/               # Business logic
       storage.ts           - LocalStorage abstraction (PREFIX: "ai-mentor:")
-      questionGenerator.ts - Smart randomized question generator
+      questionGenerator.ts - Smart randomized question generator (~2200 lines, 20+ generators)
+      studyPlan.ts         - 60-day adaptive study plan generator
       gamification.ts      - XP, levels, streaks, achievements engine
       progress.ts          - Progress tracking, daily activity, mock test results
     types/
@@ -118,10 +121,20 @@ setItem("key", data);
 
 ### Question Generator
 `src/utils/questionGenerator.ts` - generates unique questions every time:
-- **5th grade math (8-rocne)**: Simple fractions only. Results must be whole numbers or simple fractions. NO percentages. NO decimals.
-- **9th grade math (4-rocne & bilingvalne)**: Complex fractions + percentages. Percentage results must be WHOLE NUMBERS only. NO decimals.
-- **Slovak language**: Pre-defined question bank (vybrane slova, gramatika, literatura)
+- **5th grade math (8-rocne)**: Simple fractions, geometry, word problems, miestna hodnota (place value). NO percentages. NO decimals.
+- **9th grade math (4-rocne & bilingvalne)**: Complex fractions + percentages + geometry + word problems. Percentage results must be WHOLE NUMBERS only.
+- **Slovak language** (dynamic generators): Slovné druhy, Vzory (12 patterns), Pravopis i/y, Rytmický zákon, Veľké/malé písmená, Spodobovanie, Prídavné mená (vzory + typy), Zámená (doplň + typy), Vety podľa obsahu, Melódia vety, Umelecké prostriedky, Pády
+- **Slovak language** (static bank): 30+ questions from real exam worksheets (synonymá, antonymá, literatúra, pranostiky, etc.)
+- **German** (bilingválne only): Vocabulary, articles, verbs, sentences
 - **Mock test config**: 8-rocne = 15q/30min, 4-rocne = 20q/45min, bilingvalne = 15q/30min
+- **Router split**: 70% dynamic generators, 30% static bank; 8-ročné = 13 Slovak generators, 9-ročné adds Pády
+
+### Question Generator - Noun Patterns (VZORY_DB)
+12 patterns with example words:
+- **Mužský životný**: chlap (otec, učiteľ, chatár...), hrdina (hokejista, tenista, sudca...)
+- **Mužský neživotný**: dub (strom, dom, hrad, dážď...), stroj (nôž, kôš, čaj, meč...)
+- **Ženský**: žena (mama, ryba, škola...), ulica (stanica, nemocnica...), dlaň (pieseň, báseň, loď...), kosť (myš, radosť, sladkosť...)
+- **Stredný**: mesto (okno, selo, pero...), srdce (more, pole, slnce...), vysvedčenie (lístie, prítmie...), dievča (dieťa, mláďa...)
 
 ### Gamification
 `src/utils/gamification.ts` - XP system:
@@ -140,14 +153,20 @@ setItem("key", data);
 ## Language
 
 All user-facing text is in **Slovak**. Key terms:
-- Ucenie = Learning
-- Skusobny test = Mock test
+- Učenie = Learning
+- Skúšobný test = Mock test
 - Zlomky = Fractions
 - Percenta = Percentages
-- Vybrane slova = Selected words (Slovak grammar topic)
-- Prijimacky = Entrance exams
-- Gymnazium = Grammar school / high school
-- Bilingvalne gymnazium = Bilingual gymnasium (German)
+- Vybrané slová = Selected words (Slovak grammar topic)
+- Prijímačky = Entrance exams
+- Gymnázium = Grammar school / high school
+- Bilingválne gymnázium = Bilingual gymnasium (German)
+- Rytmický zákon = Rhythmic shortening law (after long syllable → short)
+- Spodobovanie = Consonant assimilation (voiced↔voiceless)
+- Vzory = Noun declension patterns (chlap, hrdina, dub, stroj, žena, ulica, dlaň, kosť, mesto, srdce, vysvedčenie, dievča)
+- Prídavné mená = Adjectives (vzory: pekný/cudzí; druhy: akostné/vzťahové/privlastňovacie)
+- Zámená = Pronouns (osobné základné / osobné privlastňovacie)
+- Miestna hodnota = Place value (jednotky, desiatky, stovky, tisícky...)
 
 ## Git & Deployment
 
@@ -157,8 +176,21 @@ All user-facing text is in **Slovak**. Key terms:
 
 ## Reference Materials
 
-`presun/` folder contains original prototype files from son's Claude.ai project:
-- `SMART-RANDOM-QUESTIONS.js` - Rich question templates (geometria, slovne ulohy, vzory, pady, pravopis) not yet integrated
+### `Testy/` - Real School Worksheets (28 files)
+Source material for question generators. Slovak language + math worksheets for 5th graders (8-ročné gymnázium entrance exams). Includes .docx, .doc, .pptx, .png files from actual school tests.
+
+**Already integrated into questionGenerator.ts:**
+- Rytmický zákon (1. Opakovanie), Vzory ženského rodu (3. Pl-), Veľké/malé písmená (4.), Polročné opakovanie (5. SJL5), Spodobovanie (PL), Miestna hodnota (du.douč.png)
+- Prídavné mená (1. Opakujeme, 2. Prídavné mená, 3. Druhy, Určovanie vzorov)
+- Vzory mužského rodu (1. Vzory chlap a hrdina, 2. CHLAP A HRDINA DUB STROJ, 3. Pravopis mužského rodu)
+- Prijímacie skúšky (4. Opakovanie 1-3, Opakovanie 5.ročník, Opakujeme netradične)
+- Zámená (2. Osobné zámená, ZÁMENÁ opakovanie)
+- Genitív (2. Zo slov utvor tvary), Čítanie s porozumením (Vo výťahu)
+- Prehľad gramatiky 5.ročník (comprehensive grammar reference)
+
+### `presun/` - Original Prototype
+Original prototype files from son's Claude.ai project:
+- `SMART-RANDOM-QUESTIONS.js` - Rich question templates (geometria, slovne ulohy, vzory, pady, pravopis) - partially integrated
 - `ai-mentor-ultra-main.jsx` / `ai-mentor-ultra-components.jsx` - Original full app prototype
 - `ai-mentor-LOCALHOST-demo.html` - Standalone demo
 
@@ -190,9 +222,9 @@ leaderboard/{examType}/entries/{uid} - XP leaderboard
 ## What's NOT Done Yet
 
 - [ ] Real AI chat API integration (currently pre-programmed responses)
-- [ ] More Slovak language questions (small bank currently)
-- [ ] More math topics beyond fractions and percentages (geometria, slovne ulohy available in presun/)
-- [ ] Integrate richer Slovak questions from presun/ (vzory, pady, pravopis i/y)
+- [ ] More math topics from presun/ (some geometria, slovne ulohy templates available)
+- [ ] Čítanie s porozumením (reading comprehension) - worksheets available in Testy/ but needs longer text UI
+- [ ] Genitív/Datív/Lokál tvorenie tvarov - fill-in generator (worksheets available)
 - [ ] Vercel deployment
 - [ ] PWA / offline support
 - [ ] Sound effects for gamification
