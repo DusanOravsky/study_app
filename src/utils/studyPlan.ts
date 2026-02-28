@@ -10,9 +10,13 @@ import { getItem, setItem } from "./storage";
 const PLAN_KEY = "study-plan";
 const DAYS_KEY = "study-plan-days";
 
-const mathTopics8 = ["Zlomky", "Desatinne cisla", "Geometria", "Slovne ulohy", "Zakladne operacie"];
+const mathTopics8 = ["Zlomky", "Desatinne cisla", "Geometria", "Slovne ulohy", "Zakladne operacie", "Miestna hodnota"];
 const mathTopics4 = ["Zlomky", "Percenta", "Rovnice", "Geometria", "Slovne ulohy", "Funkcie"];
-const slovakTopics = ["Vybrane slova", "Gramatika", "Pravopis i/y", "Vzory", "Pady", "Literatura"];
+const slovakTopics = [
+	"Vybrane slova", "Gramatika", "Pravopis i/y", "Vzory", "Pady", "Literatura",
+	"Rytmický zákon", "Veľké písmená", "Spodobovanie", "Prídavné mená",
+	"Zámená", "Vety podľa obsahu", "Melódia vety", "Umelecké prostriedky",
+];
 const germanTopics = ["Wortschatz", "Grammatik", "Leseverstaendnis", "Artikel", "Praepositionen"];
 
 function getTopicsForSubject(subject: Subject, examType: ExamType): string[] {

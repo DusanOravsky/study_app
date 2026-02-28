@@ -706,6 +706,282 @@ const slovakStaticQuestions: Omit<Question, "id">[] = [
 		correctAnswer: "y",
 		explanation: "Syn - vybrané slovo po S, píšeme 'y'.",
 	},
+	// === From: Polročné opakovanie + prijímacie skúšky worksheets ===
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Spodobovanie",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "V ktorej možnosti nedochádza k spodobovaniu?",
+		options: [
+			"stavba, všetko, keď",
+			"ťažký, sladký, podpísali",
+			"s hĺbkou, dážď, hlad",
+			"v závere, zo snehu, z okolia",
+		],
+		correctAnswer: "v závere, zo snehu, z okolia",
+		explanation: "V, zo, z sú predložky viažuce sa k nasledujúcemu slovu – tu nedochádza k spodobovaniu.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Pády",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "V ktorej možnosti sú všetky podstatné mená v rovnakom páde?",
+		options: [
+			"po ceste, o programe, na stole",
+			"pred školou, pred otca, pred jedlom",
+			"na tvári, na lavicu, nad príkladom",
+			"cez pole, vedľa parku, s autorom",
+		],
+		correctAnswer: "po ceste, o programe, na stole",
+		explanation: "Všetky tri sú v lokáli (6. pád) – o kom/čom?",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Literatúra",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: "V ktorej možnosti je prirovnanie?",
+		options: [
+			"Oko za oko, zub za zub.",
+			"Chodí po byte ako mátoha.",
+			"Povedz, ako sa voláš?",
+			"Hovoril, ako sa v meste stratil.",
+		],
+		correctAnswer: "Chodí po byte ako mátoha.",
+		explanation: "Prirovnanie – porovnanie pomocou 'ako' (chodí AKO mátoha).",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Literatúra",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: "SMS je:",
+		options: ["pozdrav", "oznámenie", "správa", "diskusia"],
+		correctAnswer: "správa",
+		explanation: "SMS = Short Message Service = krátka textová správa.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Literatúra",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "K žánrom ľudovej slovesnosti nepatria:",
+		options: [
+			"prirovnania, zdrobneniny",
+			"príslovia, porekadlá",
+			"ľudové piesne, pranostiky",
+			"ľudové rozprávky, hádanky",
+		],
+		correctAnswer: "prirovnania, zdrobneniny",
+		explanation: "Prirovnania a zdrobneniny sú umelecké prostriedky, nie žánre ľudovej slovesnosti.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Označ nesprávnu dvojicu:",
+		options: [
+			"tri = základná číslovka",
+			"ony = privlastňovacie zámeno",
+			"tretím = radová číslovka",
+			"my = osobné zámeno",
+		],
+		correctAnswer: "ony = privlastňovacie zámeno",
+		explanation: "'Ony' je osobné základné zámeno (3. os. pl. ženský rod), nie privlastňovacie.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Literatúra",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: "Označ možnosť, v ktorej slovo nepatrí do radu: verš, strofa, rým, poézia / porekadlo, príslovie, pranostika, hádanka / básnik, strofa, rým, próza",
+		options: [
+			"verš, strofa, rým, poézia",
+			"porekadlo, príslovie, pranostika, hádanka",
+			"časopisy, noviny, denníky, tlač",
+			"básnik, strofa, rým, próza",
+		],
+		correctAnswer: "básnik, strofa, rým, próza",
+		explanation: "Próza nepatrí do radu – ostatné súvisia s poéziou. Básnik píše básne (poéziu), nie prózu.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Čo je synonymum?",
+		options: [
+			"slovo s rovnakým významom",
+			"slovo s opačným významom",
+			"slovo s viacerými významami",
+			"slovo prevzaté z cudzieho jazyka",
+		],
+		correctAnswer: "slovo s rovnakým významom",
+		explanation: "Synonymum = slovo s rovnakým alebo podobným významom (napr. dom – budova).",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Čo je antonymum?",
+		options: [
+			"slovo s rovnakým významom",
+			"slovo s opačným významom",
+			"slovo s viacerými významami",
+			"slovo odvodené predponou",
+		],
+		correctAnswer: "slovo s opačným významom",
+		explanation: "Antonymum = slovo s opačným významom (napr. veľký – malý).",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: "Ktoré slovo je mnohoznačné (má viac významov)?",
+		options: ["koruna", "Bratislava", "ceruzka", "zošit"],
+		correctAnswer: "koruna",
+		explanation: "Koruna – 1. na hlave kráľa, 2. mena, 3. koruna stromu → mnohoznačné slovo.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Čo je pranostika?",
+		options: [
+			"krátky výrok o počasí podľa skúseností",
+			"porovnanie pomocou 'ako'",
+			"krátky príbeh s poučením",
+			"krátke múdre porekadlo",
+		],
+		correctAnswer: "krátky výrok o počasí podľa skúseností",
+		explanation: "Pranostika – ľudová predpoveď počasia (napr. 'Medardova kvapka – 40 dní kvapká').",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Aký je rozdiel medzi príslovím a porekadlom?",
+		options: [
+			"príslovie poúča, porekadlo len konštatuje",
+			"porekadlo poúča, príslovie len konštatuje",
+			"sú to synonymá",
+			"príslovie je o počasí",
+		],
+		correctAnswer: "príslovie poúča, porekadlo len konštatuje",
+		explanation: "Príslovie má poučný charakter (napr. 'Kto druhému jamu kope...'). Porekadlo len konštatuje.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Spodobovanie",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Ktoré spoluhlásky sú znelé párové?",
+		options: [
+			"b, d, ď, g, dz, dž, z, ž, h, v",
+			"p, t, ť, k, c, č, s, š, ch, f",
+			"m, n, ň, l, ľ, r, j",
+			"a, e, i, o, u",
+		],
+		correctAnswer: "b, d, ď, g, dz, dž, z, ž, h, v",
+		explanation: "Znelé párové spoluhlásky: b-p, d-t, ď-ť, g-k, dz-c, dž-č, z-s, ž-š, h-ch, v-f.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Gramatika",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: "Ktoré slabikotvorné spoluhlásky poznáme v slovenčine?",
+		options: ["r, ŕ, l, ĺ", "m, n, ň", "b, d, g", "s, z, c"],
+		correctAnswer: "r, ŕ, l, ĺ",
+		explanation: "Slabikotvorné spoluhlásky tvoria slabiku bez samohlásky (napr. prst, vlk, vŕba, stĺp).",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Vzory",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Podstatné meno 'dážď' patrí pod vzor:",
+		options: ["stroj", "dub", "chlap", "hrdina"],
+		correctAnswer: "stroj",
+		explanation: "Dážď – mužský rod neživotný, zakončenie na mäkkú spoluhlásku ď → vzor stroj.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Vzory",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Podstatné meno 'hokejista' patrí pod vzor:",
+		options: ["hrdina", "chlap", "dub", "žena"],
+		correctAnswer: "hrdina",
+		explanation: "Hokejista – mužský rod životný, zakončenie na -a → vzor hrdina.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Vzory",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Podstatné meno 'nemocnica' patrí pod vzor:",
+		options: ["ulica", "žena", "kosť", "dlaň"],
+		correctAnswer: "ulica",
+		explanation: "Nemocnica – ženský rod, zakončenie na -ica → vzor ulica.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Vzory",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Podstatné meno 'báseň' patrí pod vzor:",
+		options: ["dlaň", "kosť", "žena", "ulica"],
+		correctAnswer: "dlaň",
+		explanation: "Báseň – ženský rod, zakončenie na -eň → vzor dlaň.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Prídavné mená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Ktoré prídavné meno je vzťahové (nedá sa stupňovať)?",
+		options: ["drevený", "pekný", "veľký", "rýchly"],
+		correctAnswer: "drevený",
+		explanation: "Drevený – vzťahové (vyjadruje vzťah k materiálu). Nedá sa povedať 'drevenejší'.",
+	},
+	{
+		subject: "slovak",
+		examType: "8-rocne",
+		topic: "Prídavné mená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: "Aký je 2. stupeň prídavného mena 'dobrý'?",
+		options: ["lepší", "dobrší", "najlepší", "najdobrší"],
+		correctAnswer: "lepší",
+		explanation: "Dobrý – lepší – najlepší (nepravidelné stupňovanie).",
+	},
 ];
 
 // ============ SLOVAK LANGUAGE - DYNAMIC GENERATORS ============
@@ -803,21 +1079,55 @@ function generateSlovneDruhy(examType: ExamType): Question {
 }
 
 const VZORY_DB: Record<string, string[]> = {
-	chlap: ["otec", "učiteľ", "kamarát", "sused", "pes"],
-	dub: ["strom", "dom", "stôl", "telefón", "počítač", "autobus"],
-	žena: ["mama", "ryba", "škola", "trieda", "cesta", "voda"],
-	kosť: ["myš", "radosť", "mladosť", "bolesť", "súčasť"],
-	mesto: ["okno", "selo", "pero", "slovo", "číslo"],
-	dievča: ["dieťa", "mláďa", "zviera", "kura"],
+	chlap: [
+		"otec", "učiteľ", "kamarát", "sused", "pes", "chatár", "syn",
+		"lekár", "rozhodca", "vojak", "Turek", "plavec",
+	],
+	hrdina: [
+		"hokejista", "tenista", "sudca", "huslista", "predseda",
+		"kolega", "ochránca", "hrdina",
+	],
+	dub: [
+		"strom", "dom", "stôl", "telefón", "počítač", "autobus",
+		"sneh", "mráz", "hrad", "dážď", "papier", "obraz",
+		"betlehem", "park", "zákon",
+	],
+	stroj: [
+		"nôž", "kôš", "čaj", "meč", "diel", "cieľ",
+		"hotel", "likér", "koberec",
+	],
+	žena: [
+		"mama", "ryba", "škola", "trieda", "cesta", "voda",
+		"tráva", "hĺbka", "chata", "lopata", "žena", "mapa",
+	],
+	ulica: [
+		"stanica", "ulica", "práca", "lavica", "pesnička",
+		"nemocnica", "učebnica", "šatňa",
+	],
+	dlaň: [
+		"pieseň", "báseň", "loď", "obuv", "mrkva", "päsť",
+		"jedáleň", "skriňa", "knedľa",
+	],
+	kosť: ["myš", "radosť", "mladosť", "bolesť", "súčasť", "sladkosť"],
+	mesto: ["okno", "selo", "pero", "slovo", "číslo", "miesto"],
+	srdce: ["more", "pole", "slnce", "srdce"],
+	vysvedčenie: ["lístie", "prítmie", "námestie", "učenie"],
+	dievča: ["dieťa", "mláďa", "zviera", "kura", "mačiatko"],
 };
 
 const VZORY_HINT: Record<string, string> = {
-	chlap: "mužský rod životný",
-	dub: "mužský rod neživotný",
-	žena: "ženský rod",
-	kosť: "ženský rod na -sť",
-	mesto: "stredný rod na -o",
-	dievča: "stredný rod na -a/-ä",
+	chlap: "mužský rod životný, zakončenie na spoluhlásku",
+	hrdina: "mužský rod životný, zakončenie na -a",
+	dub: "mužský rod neživotný, tvrdá/obojaká spoluhláska",
+	stroj: "mužský rod neživotný, mäkká spoluhláska",
+	žena: "ženský rod, zakončenie na -a",
+	ulica: "ženský rod, zakončenie na -ica/-a (mäkká)",
+	dlaň: "ženský rod, zakončenie na -ň/-ľ/-v/-eň",
+	kosť: "ženský rod, zakončenie na -sť/-osť",
+	mesto: "stredný rod, zakončenie na -o",
+	srdce: "stredný rod, zakončenie na -e",
+	vysvedčenie: "stredný rod, zakončenie na -ie",
+	dievča: "stredný rod, zakončenie na -a/-ä",
 };
 
 function generateVzory(examType: ExamType): Question {
@@ -1002,6 +1312,482 @@ function generatePravopisIY(examType: ExamType): Question {
 		options,
 		correctAnswer: vyber.odpoved,
 		explanation: `${vyber.vysvetlenie}. Správne: ${vyber.slovo.replace("___", vyber.odpoved)}.`,
+	};
+}
+
+// ============ RYTMICKÝ ZÁKON ============
+
+const RYTMICKY_ZAKON_DB = [
+	{ slovo: "krás___", spravne: "ny", nespravne: "ný", vysvetlenie: "krás-ny: po dlhej slabike nasleduje krátka (ZoRK)" },
+	{ slovo: "múd___", spravne: "ry", nespravne: "rý", vysvetlenie: "múd-ry: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "biel___", spravne: "y", nespravne: "ý", vysvetlenie: "biel-y: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "líš___", spravne: "ka", nespravne: "ká", vysvetlenie: "líš-ka: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "kús___", spravne: "ok", nespravne: "ók", vysvetlenie: "kús-ok: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "vĺ___", spravne: "ča", nespravne: "čá", vysvetlenie: "vĺ-ča: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "úz___", spravne: "ky", nespravne: "ký", vysvetlenie: "úz-ky: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "svie___", spravne: "že", nespravne: "žé", vysvetlenie: "svie-že: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "hlav___", spravne: "né", nespravne: "ne", vysvetlenie: "hlav-né: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "dob___", spravne: "rú", nespravne: "ru", vysvetlenie: "dob-rú: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "ver___", spravne: "ná", nespravne: "na", vysvetlenie: "ver-ná: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "dlh___", spravne: "ý", nespravne: "y", vysvetlenie: "dlh-ý: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "slab___", spravne: "á", nespravne: "a", vysvetlenie: "slab-á: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "ried___", spravne: "ka", nespravne: "ká", vysvetlenie: "ried-ka: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "súcit___", spravne: "ný", nespravne: "ny", vysvetlenie: "sú-cit-ný: predchádzajúca slabika je krátka (cit), ZoRK sa neuplatňuje" },
+	{ slovo: "mors___", spravne: "ké", nespravne: "ke", vysvetlenie: "mor-ské: predchádzajúca slabika je krátka, ZoRK sa neuplatňuje" },
+	{ slovo: "domá___", spravne: "ce", nespravne: "cé", vysvetlenie: "domá-ce: po dlhej slabike krátka (ZoRK)" },
+	{ slovo: "zlat___", spravne: "ý", nespravne: "y", vysvetlenie: "zla-tý: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "ohniv___", spravne: "ý", nespravne: "y", vysvetlenie: "oh-ni-vý: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "prít___", spravne: "mie", nespravne: "mié", vysvetlenie: "prít-mie: po dlhej slabike (prí-) nasleduje krátka – PORUŠENIE ZoRK" },
+	{ slovo: "sloven___", spravne: "ský", nespravne: "sky", vysvetlenie: "slo-ven-ský: krátka + dlhá – ZoRK sa neuplatňuje" },
+	{ slovo: "hlávko___", spravne: "vé", nespravne: "ve", vysvetlenie: "hláv-ko-vé: predchádzajúca slabika (ko) je krátka, ZoRK sa neuplatňuje" },
+	{ slovo: "vráska___", spravne: "vá", nespravne: "va", vysvetlenie: "vrás-ka-vá: predchádzajúca slabika (ka) je krátka, ZoRK sa neuplatňuje" },
+];
+
+function generateRytmickyZakon(examType: ExamType): Question {
+	const item = pickRandom(RYTMICKY_ZAKON_DB);
+	const options = shuffle([
+		item.spravne,
+		item.nespravne,
+		item.spravne === item.spravne.toLowerCase()
+			? item.spravne.replace(/[aeiou]/i, "á")
+			: item.spravne.toLowerCase(),
+		`-${item.spravne}`,
+	]);
+	// Deduplicate and ensure 4 options
+	const unique = [...new Set(options)];
+	while (unique.length < 4) unique.push("---");
+
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Rytmický zákon",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Doplň správny tvar (rytmický zákon): "${item.slovo}"`,
+		options: shuffle(unique),
+		correctAnswer: item.spravne,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ VEĽKÉ / MALÉ PÍSMENÁ ============
+
+const VELKE_PISMENA_DB = [
+	{ text: "Vysoké Tatry", spravne: "Vysoké Tatry", vysvetlenie: "vlastné meno – pohorie" },
+	{ text: "slovenská republika", spravne: "Slovenská republika", vysvetlenie: "oficiálny názov štátu – prvé slovo veľkým" },
+	{ text: "bratislavský hrad", spravne: "Bratislavský hrad", vysvetlenie: "vlastné meno – pamiatka/konkrétna stavba" },
+	{ text: "dunaj", spravne: "Dunaj", vysvetlenie: "vlastné meno – rieka" },
+	{ text: "vianoce", spravne: "Vianoce", vysvetlenie: "sviatok – veľké V" },
+	{ text: "dejepis a slovenský jazyk", spravne: "dejepis a slovenský jazyk", vysvetlenie: "školské predmety – malým písmenom" },
+	{ text: "Grécki bohovia", spravne: "grécki bohovia", vysvetlenie: "prídavné meno odvodené od vlastného mena – malým; nie oficiálne náboženstvo" },
+	{ text: "Národná rada Slovenskej republiky", spravne: "Národná rada Slovenskej republiky", vysvetlenie: "názov inštitúcie" },
+	{ text: "Základná škola Jozefa Murgaša", spravne: "Základná škola Jozefa Murgaša", vysvetlenie: "konkrétny názov školy – veľké Z" },
+	{ text: "poslanec v parlamente", spravne: "poslanec v parlamente", vysvetlenie: "zamestnanie/funkcia – malým" },
+	{ text: "atlantický Oceán", spravne: "Atlantický oceán", vysvetlenie: "vlastné meno + druhový názov malým (oceán)" },
+	{ text: "Slovenský raj", spravne: "Slovenský raj", vysvetlenie: "vlastné meno – národný park" },
+	{ text: "školský zákon", spravne: "školský zákon", vysvetlenie: "všeobecný zákon – malým" },
+	{ text: "Námestie hraničiarov", spravne: "Námestie hraničiarov", vysvetlenie: "názov námestia – prvé slovo vždy veľkým" },
+	{ text: "Január", spravne: "január", vysvetlenie: "mesiace – malým písmenom" },
+	{ text: "Kysucké nové mesto", spravne: "Kysucké Nové Mesto", vysvetlenie: "názov mesta – všetky slová okrem predložiek veľkým" },
+	{ text: "pes dunčo", spravne: "pes Dunčo", vysvetlenie: "meno zvieraťa – veľkým, druh malým" },
+	{ text: "mars", spravne: "Mars", vysvetlenie: "vlastné meno – planéta" },
+	{ text: "nový rok", spravne: "Nový rok", vysvetlenie: "sviatok (1.1.) – N veľké, r malé" },
+	{ text: "časopis slniečko", spravne: "časopis Slniečko", vysvetlenie: "druh (časopis) malým, názov (Slniečko) veľkým" },
+	{ text: "Traja Králi", spravne: "Traja králi", vysvetlenie: "sviatok – prvé veľkým, druhé malým" },
+	{ text: "minister vnútra", spravne: "minister vnútra", vysvetlenie: "funkcia – malým" },
+	{ text: "ázia", spravne: "Ázia", vysvetlenie: "vlastné meno – svetadiel" },
+	{ text: "Záhorská Bystrica", spravne: "Záhorská Bystrica", vysvetlenie: "názov mestskej časti" },
+	{ text: "oravské obce", spravne: "oravské obce", vysvetlenie: "prídavné meno odvodené od vlastného – malým" },
+	{ text: "Slovenská národná galéria", spravne: "Slovenská národná galéria", vysvetlenie: "oficiálny názov inštitúcie" },
+	{ text: "Muránska Planina", spravne: "Muránska planina", vysvetlenie: "vlastné meno + druhový názov malým (planina)" },
+	{ text: "Jaskyňa Driny", spravne: "Jaskyňa Driny", vysvetlenie: "konkrétny názov jaskyne" },
+	{ text: "vianočné sviatky", spravne: "vianočné sviatky", vysvetlenie: "prídavné meno odvodené od sviatku – malým" },
+	{ text: "Streda nad bodrogom", spravne: "Streda nad Bodrogom", vysvetlenie: "názov obce – predložka malým, zvyšok veľkým" },
+	{ text: "Severná kórea", spravne: "Severná Kórea", vysvetlenie: "názov štátu" },
+	{ text: "kniha narnia", spravne: "kniha Narnia", vysvetlenie: "druh malým, názov diela veľkým" },
+	{ text: "Rozprávky starej matere", spravne: "Rozprávky starej matere", vysvetlenie: "názov knihy – prvé slovo veľkým" },
+	{ text: "Park kultúry", spravne: "Park kultúry", vysvetlenie: "konkrétny názov parku" },
+	{ text: "Filmový ústav", spravne: "Filmový ústav", vysvetlenie: "názov inštitúcie" },
+	{ text: "tragédia hamlet", spravne: "tragédia Hamlet", vysvetlenie: "druh malým, názov diela veľkým" },
+	{ text: "Žiar nad hronom", spravne: "Žiar nad Hronom", vysvetlenie: "názov mesta – predložka malým" },
+	{ text: "Považská bystrica", spravne: "Považská Bystrica", vysvetlenie: "názov mesta" },
+	{ text: "Ulica mieru", spravne: "Ulica mieru", vysvetlenie: "názov ulice – prvé slovo veľkým" },
+	{ text: "Mierová ulica", spravne: "Mierová ulica", vysvetlenie: "názov ulice – prvé slovo veľkým" },
+];
+
+function generateVelkePismena(examType: ExamType): Question {
+	const item = pickRandom(VELKE_PISMENA_DB);
+
+	// Generate 3 wrong variants with different capitalization
+	const words = item.spravne.split(" ");
+	const wrongs: string[] = [];
+
+	// All lowercase
+	wrongs.push(item.spravne.toLowerCase());
+	// All first-letter uppercase
+	wrongs.push(words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "));
+	// Swap first word case
+	const swapped = words[0] === words[0].toLowerCase()
+		? words[0].charAt(0).toUpperCase() + words[0].slice(1)
+		: words[0].toLowerCase();
+	wrongs.push([swapped, ...words.slice(1)].join(" "));
+
+	// Filter out duplicates of correct answer, pick 3
+	const uniqueWrongs = [...new Set(wrongs.filter((w) => w !== item.spravne))];
+	while (uniqueWrongs.length < 3) {
+		uniqueWrongs.push(item.spravne.toUpperCase());
+	}
+
+	const options = shuffle([item.spravne, ...uniqueWrongs.slice(0, 3)]);
+
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Veľké písmená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Vyber správny zápis:`,
+		options,
+		correctAnswer: item.spravne,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ SPODOBOVANIE ============
+
+const SPODOBOVANIE_DB = [
+	{ veta: "Pred tvojím domom", spravne: "d→t", vysvetlenie: "pred [pret] – d sa spodobuje na t pred t" },
+	{ veta: "K ťažším časom", spravne: "ťaž→ťaš", vysvetlenie: "ťažším [ťašším] – ž sa spodobuje na š pred š" },
+	{ veta: "Hrad stojí na kopci", spravne: "d→t", vysvetlenie: "hrad [hrat] – d na konci slova sa spodobuje na t" },
+	{ veta: "Na lúke stojí dub", spravne: "b→p", vysvetlenie: "dub [dup] – b na konci slova sa spodobuje na p" },
+	{ veta: "Hriech si priznal", spravne: "ch→x", vysvetlenie: "hriech [hriex] – ch na konci sa spodobuje" },
+	{ veta: "Krv tiekla prúdom", spravne: "v→f", vysvetlenie: "krv [krf] – v na konci sa spodobuje na f" },
+	{ veta: "Hŕba ľudí v uliciach", spravne: "b→p", vysvetlenie: "hŕba [hŕba] – ale predložka 'v' [f] sa tiež spodobuje" },
+	{ veta: "Hneď sa vrátiš", spravne: "ď→ť", vysvetlenie: "hneď [hneť] – ď na konci sa spodobuje na ť" },
+	{ veta: "Máš pravdu", spravne: "š→ž", vysvetlenie: "máš [máš] – žiadne spodobovanie, ale pravdu je správne" },
+	{ veta: "Keď odišli, plakala som", spravne: "ď→ť", vysvetlenie: "keď [keť] – ď na konci sa spodobuje na ť" },
+	{ veta: "Dnes je pondelok", spravne: "k→g", vysvetlenie: "pondelok [pondelok] – k na konci slova sa zachováva (znelá pred znelou)" },
+	{ veta: "V dome nik nie je", spravne: "v→f", vysvetlenie: "v [f] – predložka v sa spodobuje na f pred neznelou" },
+	{ veta: "S hĺbkou a dažďom", spravne: "s→z", vysvetlenie: "s [z] – predložka s sa spodobuje na z pred znelou h" },
+	{ veta: "Stavba je veľká", spravne: "v→f", vysvetlenie: "stavba [stafba] – v sa spodobuje na f pred neznelou b" },
+	{ veta: "Sneh padal celú noc", spravne: "h→ch", vysvetlenie: "sneh [snech] – h na konci sa spodobuje na ch" },
+];
+
+const SPODOBOVANIE_PARY = ["d→t", "b→p", "v→f", "z→s", "ž→š", "g→k", "h→ch", "ď→ť", "dz→c", "dž→č"];
+
+function generateSpodobovanie(examType: ExamType): Question {
+	const item = pickRandom(SPODOBOVANIE_DB);
+	const wrongPairs = shuffle(
+		SPODOBOVANIE_PARY.filter((p) => p !== item.spravne),
+	).slice(0, 3);
+	const options = shuffle([item.spravne, ...wrongPairs]);
+
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Spodobovanie",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Nájdi spodobovanie vo vete: "${item.veta}"`,
+		options,
+		correctAnswer: item.spravne,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ PRÍDAVNÉ MENÁ (vzory pekný / cudzí) ============
+
+const PRIDAVNE_MENA_DB = [
+	{ spojenie: "v tmavom kabáte", vzor: "pekný", vysvetlenie: "tmavom – tvrdá koncovka -om → vzor pekný" },
+	{ spojenie: "znepokojení žiaci", vzor: "pekný", vysvetlenie: "znepokojení – koncovka -í v N pl. → vzor pekný" },
+	{ spojenie: "najstarší brat", vzor: "cudzí", vysvetlenie: "najstarší – mäkká koncovka -í → vzor cudzí" },
+	{ spojenie: "najmenšie mačiatko", vzor: "cudzí", vysvetlenie: "najmenšie – mäkká koncovka -ie → vzor cudzí" },
+	{ spojenie: "pod vysokými stromami", vzor: "pekný", vysvetlenie: "vysokými – tvrdá koncovka -ými → vzor pekný" },
+	{ spojenie: "svieži nápoj", vzor: "cudzí", vysvetlenie: "svieži – mäkká koncovka -í → vzor cudzí" },
+	{ spojenie: "so zaujímavou knihou", vzor: "pekný", vysvetlenie: "zaujímavou – tvrdá koncovka -ou → vzor pekný" },
+	{ spojenie: "voňavý čaj", vzor: "pekný", vysvetlenie: "voňavý – tvrdá koncovka -ý → vzor pekný" },
+	{ spojenie: "s malým mačaťom", vzor: "pekný", vysvetlenie: "malým – tvrdá koncovka -ým → vzor pekný" },
+	{ spojenie: "ľahší diktát", vzor: "cudzí", vysvetlenie: "ľahší – mäkká koncovka -í → vzor cudzí" },
+	{ spojenie: "súmerná tvár", vzor: "pekný", vysvetlenie: "súmerná – tvrdá koncovka -á → vzor pekný" },
+	{ spojenie: "čierne gombíky", vzor: "pekný", vysvetlenie: "čierne – tvrdá koncovka -e → vzor pekný" },
+	{ spojenie: "ťažké učebnice", vzor: "pekný", vysvetlenie: "ťažké – tvrdá koncovka -é → vzor pekný" },
+	{ spojenie: "majestátny hrad", vzor: "pekný", vysvetlenie: "majestátny – tvrdá koncovka -ý → vzor pekný" },
+	{ spojenie: "suché lístie", vzor: "pekný", vysvetlenie: "suché – tvrdá koncovka -é → vzor pekný" },
+	{ spojenie: "dobrú čokoládku", vzor: "pekný", vysvetlenie: "dobrú – tvrdá koncovka -ú → vzor pekný" },
+	{ spojenie: "štíhla laň", vzor: "pekný", vysvetlenie: "štíhla – tvrdá koncovka -a → vzor pekný" },
+	{ spojenie: "prázdnejšie miesta", vzor: "cudzí", vysvetlenie: "prázdnejšie – mäkká koncovka → vzor cudzí" },
+	{ spojenie: "chutná sladkosť", vzor: "pekný", vysvetlenie: "chutná – tvrdá koncovka -á → vzor pekný" },
+	{ spojenie: "usilovní lekári", vzor: "pekný", vysvetlenie: "usilovní – koncovka -í v N pl. MŽ → vzor pekný" },
+	{ spojenie: "na drevenej polici", vzor: "pekný", vysvetlenie: "drevenej – tvrdá koncovka -ej → vzor pekný" },
+];
+
+const PRIDAVNE_TYPY_DB = [
+	{ slovo: "pekný", typ: "akostné", vysvetlenie: "vyjadruje vlastnosť, dá sa stupňovať" },
+	{ slovo: "veľký", typ: "akostné", vysvetlenie: "vyjadruje vlastnosť, dá sa stupňovať" },
+	{ slovo: "drevený", typ: "vzťahové", vysvetlenie: "vyjadruje vzťah k materiálu (drevo), nedá sa stupňovať" },
+	{ slovo: "školský", typ: "vzťahové", vysvetlenie: "vyjadruje vzťah k škole, nedá sa stupňovať" },
+	{ slovo: "rýchly", typ: "akostné", vysvetlenie: "vyjadruje vlastnosť, dá sa stupňovať" },
+	{ slovo: "otcov", typ: "privlastňovacie", vysvetlenie: "privlastňuje osobe (otec)" },
+	{ slovo: "tatranský", typ: "vzťahové", vysvetlenie: "vyjadruje vzťah k Tatrám, nedá sa stupňovať" },
+	{ slovo: "matkin", typ: "privlastňovacie", vysvetlenie: "privlastňuje osobe (matka)" },
+	{ slovo: "múdry", typ: "akostné", vysvetlenie: "vyjadruje vlastnosť, dá sa stupňovať" },
+	{ slovo: "bratov", typ: "privlastňovacie", vysvetlenie: "privlastňuje osobe (brat)" },
+	{ slovo: "zlatý", typ: "akostné", vysvetlenie: "vyjadruje vlastnosť (farba), dá sa stupňovať" },
+	{ slovo: "morský", typ: "vzťahové", vysvetlenie: "vyjadruje vzťah k moru, nedá sa stupňovať" },
+];
+
+function generatePridavneMenaVzory(examType: ExamType): Question {
+	const item = pickRandom(PRIDAVNE_MENA_DB);
+	const options = shuffle(["pekný", "cudzí"]);
+	while (options.length < 4) {
+		options.push(pickRandom(["matkin", "otcov"]));
+	}
+
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Prídavné mená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Urči vzor prídavného mena: "${item.spojenie}"`,
+		options: shuffle([...new Set(options)].slice(0, 4)),
+		correctAnswer: item.vzor,
+		explanation: item.vysvetlenie,
+	};
+}
+
+function generatePridavneMenuTypy(examType: ExamType): Question {
+	const item = pickRandom(PRIDAVNE_TYPY_DB);
+	const options = shuffle(["akostné", "vzťahové", "privlastňovacie"]);
+	if (options.length < 4) options.push("neurčité");
+
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Prídavné mená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Aký druh prídavného mena je "${item.slovo}"?`,
+		options: shuffle(options),
+		correctAnswer: item.typ,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ ZÁMENÁ ============
+
+const ZAMENA_DB = [
+	{ veta: "___ som to povedal.", spravne: "Ja", moznosti: ["Ja", "My", "Ty", "On"], vysvetlenie: "1. osoba sg. → ja" },
+	{ veta: "Poď ku ___!", spravne: "mne", moznosti: ["mne", "mi", "mňa", "ja"], vysvetlenie: "ku komu? → ku mne (D sg.)" },
+	{ veta: "Daj to ___.", spravne: "mu", moznosti: ["mu", "jemu", "jeho", "im"], vysvetlenie: "komu? → jemu/mu (D sg. krátky tvar)" },
+	{ veta: "Videl som ___ na ulici.", spravne: "ju", moznosti: ["ju", "jej", "ona", "ňu"], vysvetlenie: "koho? → ju (A sg. krátky tvar)" },
+	{ veta: "Prišiel s ___.", spravne: "nami", moznosti: ["nami", "nás", "nám", "my"], vysvetlenie: "s kým? → s nami (I pl.)" },
+	{ veta: "Povedal to o ___.", spravne: "nich", moznosti: ["nich", "im", "ich", "oni"], vysvetlenie: "o kom? → o nich (L pl.)" },
+	{ veta: "Stretol som ___ na ihrisku.", spravne: "ich", moznosti: ["ich", "im", "oni", "nich"], vysvetlenie: "koho? → ich (A pl.)" },
+	{ veta: "___ kniha je na stole.", spravne: "Moja", moznosti: ["Moja", "Moju", "Moje", "Mne"], vysvetlenie: "čia kniha? → moja (privlastňovacie zámeno)" },
+	{ veta: "Toto je ___ pes.", spravne: "tvoj", moznosti: ["tvoj", "tebe", "ti", "tvojho"], vysvetlenie: "čí pes? → tvoj (privlastňovacie zámeno)" },
+	{ veta: "Idem k ___.", spravne: "tebe", moznosti: ["tebe", "ti", "ty", "tvoj"], vysvetlenie: "ku komu? → k tebe (D sg. dlhý tvar)" },
+];
+
+const ZAMENA_TYPY_DB = [
+	{ zameno: "ja", typ: "osobné základné", vysvetlenie: "ja, ty, on/ona/ono, my, vy, oni/ony" },
+	{ zameno: "ty", typ: "osobné základné", vysvetlenie: "ja, ty, on/ona/ono, my, vy, oni/ony" },
+	{ zameno: "my", typ: "osobné základné", vysvetlenie: "ja, ty, on/ona/ono, my, vy, oni/ony" },
+	{ zameno: "môj", typ: "osobné privlastňovacie", vysvetlenie: "môj, tvoj, jeho, jej, náš, váš, ich" },
+	{ zameno: "tvoj", typ: "osobné privlastňovacie", vysvetlenie: "môj, tvoj, jeho, jej, náš, váš, ich" },
+	{ zameno: "náš", typ: "osobné privlastňovacie", vysvetlenie: "môj, tvoj, jeho, jej, náš, váš, ich" },
+	{ zameno: "váš", typ: "osobné privlastňovacie", vysvetlenie: "môj, tvoj, jeho, jej, náš, váš, ich" },
+	{ zameno: "ich", typ: "osobné privlastňovacie", vysvetlenie: "môj, tvoj, jeho, jej, náš, váš, ich" },
+];
+
+function generateZamenaFill(examType: ExamType): Question {
+	const item = pickRandom(ZAMENA_DB);
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Zámená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Doplň správne zámeno: "${item.veta}"`,
+		options: shuffle([...item.moznosti]),
+		correctAnswer: item.spravne,
+		explanation: item.vysvetlenie,
+	};
+}
+
+function generateZamenaTypy(examType: ExamType): Question {
+	const item = pickRandom(ZAMENA_TYPY_DB);
+	const options = shuffle(["osobné základné", "osobné privlastňovacie", "ukazovacie", "opytovacie"]);
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Zámená",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Aký druh zámena je "${item.zameno}"?`,
+		options,
+		correctAnswer: item.typ,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ VETY PODĽA OBSAHU ============
+
+const VETY_PODLA_OBSAHU_DB = [
+	{ veta: "Skončili sa zimné prázdniny.", typ: "oznamovacia", vysvetlenie: "oznamuje skutočnosť" },
+	{ veta: "Aké bude počasie v januári?", typ: "opytovacia", vysvetlenie: "pýta sa na informáciu" },
+	{ veta: "Bicyklisti, noste prilby!", typ: "rozkazovacia", vysvetlenie: "prikazuje, rozkazuje" },
+	{ veta: "Nech sa nám v škole všetko podarí!", typ: "želacia", vysvetlenie: "vyjadruje želanie" },
+	{ veta: "To je ale krásny deň!", typ: "zvolacia", vysvetlenie: "vyjadruje silný citový vzťah" },
+	{ veta: "Mama ide do obchodu.", typ: "oznamovacia", vysvetlenie: "oznamuje skutočnosť" },
+	{ veta: "Kedy prídeš domov?", typ: "opytovacia", vysvetlenie: "pýta sa na informáciu" },
+	{ veta: "Otvor okno!", typ: "rozkazovacia", vysvetlenie: "prikazuje, rozkazuje" },
+	{ veta: "Kiežby už bolo leto!", typ: "želacia", vysvetlenie: "vyjadruje želanie (kiežby)" },
+	{ veta: "Aký krásny západ slnka!", typ: "zvolacia", vysvetlenie: "vyjadruje silný citový vzťah" },
+];
+
+function generateVetyPodlaObsahu(examType: ExamType): Question {
+	const item = pickRandom(VETY_PODLA_OBSAHU_DB);
+	const options = shuffle(["oznamovacia", "opytovacia", "rozkazovacia", "želacia"]);
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Vety podľa obsahu",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: `Urči vetu podľa obsahu (zámeru hovoriaceho): "${item.veta}"`,
+		options,
+		correctAnswer: item.typ,
+		explanation: `${item.typ} veta – ${item.vysvetlenie}.`,
+	};
+}
+
+// ============ MELÓDIA VETY ============
+
+const MELODIA_VETY_DB = [
+	{ veta: "Kedy napadne dostatok snehu?", melodia: "klesavá", vysvetlenie: "opytovacie zámeno (kedy) → klesavá melódia" },
+	{ veta: "Budú moje odpovede správne?", melodia: "stúpavá", vysvetlenie: "zisťovacia otázka (áno/nie) → stúpavá melódia" },
+	{ veta: "Čo si to urobil?!", melodia: "klesavá", vysvetlenie: "opytovacie zámeno (čo) → klesavá melódia" },
+	{ veta: "Ideš dnes do školy?", melodia: "stúpavá", vysvetlenie: "zisťovacia otázka (áno/nie) → stúpavá melódia" },
+	{ veta: "Kde bývaš?", melodia: "klesavá", vysvetlenie: "opytovacie zámeno (kde) → klesavá melódia" },
+	{ veta: "Prečo si neprišiel?", melodia: "klesavá", vysvetlenie: "opytovacie zámeno (prečo) → klesavá melódia" },
+	{ veta: "Máš rád čokoládu?", melodia: "stúpavá", vysvetlenie: "zisťovacia otázka (áno/nie) → stúpavá melódia" },
+	{ veta: "Koľko máš rokov?", melodia: "klesavá", vysvetlenie: "opytovacie zámeno (koľko) → klesavá melódia" },
+];
+
+function generateMelodiaVety(examType: ExamType): Question {
+	const item = pickRandom(MELODIA_VETY_DB);
+	const options = shuffle(["klesavá", "stúpavá", "klesavo-stúpavá", "stúpavo-klesavá"]);
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Melódia vety",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: `Aká je melódia vety: "${item.veta}"`,
+		options,
+		correctAnswer: item.melodia,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ UMELECKÉ PROSTRIEDKY ============
+
+const UMELECKE_PROSTRIEDKY_DB = [
+	{ priklad: "sniežik", prostriedok: "zdrobnenina", vysvetlenie: "zdrobnenina – zmenšená forma slova (sneh → sniežik)" },
+	{ priklad: "dážď smúti", prostriedok: "personifikácia", vysvetlenie: "personifikácia – neživému sa pripisujú ľudské vlastnosti" },
+	{ priklad: "Tatry sa tešia", prostriedok: "personifikácia", vysvetlenie: "personifikácia – neživému sa pripisujú ľudské vlastnosti" },
+	{ priklad: "biely sťa sneh", prostriedok: "prirovnanie", vysvetlenie: "prirovnanie – porovnanie pomocou sťa/ako/než" },
+	{ priklad: "chodí ako mátoha", prostriedok: "prirovnanie", vysvetlenie: "prirovnanie – porovnanie pomocou ako" },
+	{ priklad: "zlaté slnko", prostriedok: "epiteton", vysvetlenie: "epiteton (básnický prívlastok) – výrazné prídavné meno" },
+	{ priklad: "slzy veľké ako hrášky", prostriedok: "prirovnanie", vysvetlenie: "prirovnanie – porovnanie pomocou ako" },
+	{ priklad: "mamička", prostriedok: "zdrobnenina", vysvetlenie: "zdrobnenina – zmenšená forma slova (mama → mamička)" },
+];
+
+function generateUmeleckeProstriedky(examType: ExamType): Question {
+	const item = pickRandom(UMELECKE_PROSTRIEDKY_DB);
+	const options = shuffle(["personifikácia", "prirovnanie", "zdrobnenina", "epiteton"]);
+	return {
+		id: uid(),
+		subject: "slovak",
+		examType,
+		topic: "Umelecké prostriedky",
+		difficulty: 2,
+		type: "multiple-choice",
+		question: `Aký umelecký prostriedok je použitý: "${item.priklad}"?`,
+		options,
+		correctAnswer: item.prostriedok,
+		explanation: item.vysvetlenie,
+	};
+}
+
+// ============ MIESTNA HODNOTA (MATH, 8-ročné) ============
+
+const MIESTNE_HODNOTY = [
+	{ nazov: "jednotky", pozicia: 0 },
+	{ nazov: "desiatky", pozicia: 1 },
+	{ nazov: "stovky", pozicia: 2 },
+	{ nazov: "tisícky", pozicia: 3 },
+	{ nazov: "desaťtisícky", pozicia: 4 },
+	{ nazov: "stotisícky", pozicia: 5 },
+	{ nazov: "milióny", pozicia: 6 },
+] as const;
+
+function generateMiestnaHodnota(examType: ExamType): Question {
+	// Generate a random 6-9 digit number
+	const numDigits = randInt(6, 9);
+	const digits: number[] = [randInt(1, 9)]; // first digit nonzero
+	for (let i = 1; i < numDigits; i++) {
+		digits.push(randInt(0, 9));
+	}
+	const numStr = digits.join("");
+	const num = Number.parseInt(numStr);
+
+	// Format with spaces (Slovak convention)
+	const formatted = num.toLocaleString("sk-SK");
+
+	// Pick a random place value that exists in this number
+	const maxPos = Math.min(numDigits - 1, 6);
+	const posIdx = randInt(0, maxPos);
+	const miestnaHodnota = MIESTNE_HODNOTY[posIdx];
+
+	// Get the digit at that position (from right)
+	const reversedDigits = [...digits].reverse();
+	const correctDigit = reversedDigits[miestnaHodnota.pozicia];
+
+	// Generate wrong answers from other digits in the number
+	const otherDigits = digits.filter((_, i) => i !== numDigits - 1 - miestnaHodnota.pozicia);
+	const wrongs = shuffle([...new Set(otherDigits)]).slice(0, 3);
+	while (wrongs.length < 3) {
+		const r = randInt(0, 9);
+		if (r !== correctDigit && !wrongs.includes(r)) wrongs.push(r);
+	}
+
+	const options = shuffle([
+		String(correctDigit),
+		...wrongs.slice(0, 3).map(String),
+	]);
+
+	return {
+		id: uid(),
+		subject: "math",
+		examType,
+		topic: "Miestna hodnota",
+		difficulty: 1,
+		type: "multiple-choice",
+		question: `Koľko ${miestnaHodnota.nazov} má číslo ${formatted}?`,
+		options,
+		correctAnswer: String(correctDigit),
+		explanation: `Číslo ${formatted}: na pozícii ${miestnaHodnota.nazov} je cifra ${correctDigit}.`,
 	};
 }
 
@@ -1283,6 +2069,16 @@ function generateSlovakQuestion(examType: ExamType): Question {
 		() => generateSlovneDruhy(examType),
 		() => generateVzory(examType),
 		() => generatePravopisIY(examType),
+		() => generateRytmickyZakon(examType),
+		() => generateVelkePismena(examType),
+		() => generateSpodobovanie(examType),
+		() => generatePridavneMenaVzory(examType),
+		() => generatePridavneMenuTypy(examType),
+		() => generateZamenaFill(examType),
+		() => generateZamenaTypy(examType),
+		() => generateVetyPodlaObsahu(examType),
+		() => generateMelodiaVety(examType),
+		() => generateUmeleckeProstriedky(examType),
 	];
 
 	const generators9: (() => Question)[] = [
@@ -1292,8 +2088,8 @@ function generateSlovakQuestion(examType: ExamType): Question {
 
 	const generators = is8rocne ? generators8 : generators9;
 
-	// 60% dynamic, 40% static bank
-	if (Math.random() < 0.6) {
+	// 70% dynamic (more generators now), 30% static bank
+	if (Math.random() < 0.7) {
 		return pickRandom(generators)();
 	}
 
@@ -1325,6 +2121,7 @@ export function generateQuestion(
 				() => generateWordProblemMultiplication(examType),
 				() => generateWordProblemSubtraction(examType),
 				() => generateWordProblemFraction(examType),
+				() => generateMiestnaHodnota(examType),
 			];
 			return pickRandom(generators8)();
 		}
