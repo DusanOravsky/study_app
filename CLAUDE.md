@@ -51,7 +51,7 @@ study-app/
     firebase/            # Firebase integration
       config.ts            - Firebase app/auth/db initialization
       auth.ts              - Sign in, register, sign out, auth state
-      classes.ts           - Teacher class management (CRUD, assignments, submissions)
+      classes.ts           - Teacher class management (CRUD, assignments, submissions, getStudentPendingAssignments)
       admin.ts             - Admin school management (CRUD, whitelist, addTeacherWithClass)
       userRole.ts          - Role management, parent-child linking (parentCodes collection)
       sync.ts              - Firestore data sync
@@ -61,8 +61,8 @@ study-app/
     pages/               # Route pages
       RoleSelectionPage.tsx  - / (landing, 4 role cards: student/parent/teacher/admin)
       ExamTypePage.tsx       - /exam-type (8-rocne vs 4-rocne vs bilingvalne)
-      DashboardPage.tsx      - /dashboard (main hub)
-      LearningPage.tsx       - /learning, /learning/:subject (adaptive learning phases)
+      DashboardPage.tsx      - /dashboard (main hub, shows pending teacher assignments)
+      LearningPage.tsx       - /learning, /learning/:subject (adaptive learning phases + assignment mode)
       MockTestPage.tsx       - /test (timed practice tests)
       ChatPage.tsx           - /chat (AI chat, pre-programmed for now)
       ProfilePage.tsx        - /profile (stats, achievements, settings)
@@ -151,6 +151,7 @@ setItem("key", data);
 - **Question 2+**: Riešenie → Spätná väzba
 - Same flow for all subjects (math, slovak, german)
 - Plánovanie phase removed — students go straight to solving after the first example
+- **Assignment mode**: LearningPage accepts `assignmentId`/`classId`/`questionCount`/`difficulty` via location state; uses assignment questionCount, submits result to Firestore on completion
 
 ## Language
 
@@ -218,6 +219,14 @@ Original prototype files from son's Claude.ai project:
 - Parent enters R-XXXX to link child — `lookupParentCode()` checks `parentCodes` then falls back to `users` query
 - `ensureDisplayName()` runs on every login to backfill missing names in Firestore
 
+### Teacher Assignments → Student Flow
+- Teacher creates assignment in TeacherDashboardPage (title, subject, topic, questionCount, difficulty, dueDate)
+- Assignment saved to `classes/{classId}/assignments/{id}`
+- Student Dashboard fetches pending assignments via `getStudentPendingAssignments(uid)` — checks all student's classes, filters out already-submitted
+- Student clicks "Splniť" → navigates to LearningPage with assignment context (`assignmentId`, `classId`, `questionCount`, `difficulty`, `topic`)
+- LearningPage in assignment mode: uses assignment's `questionCount`, on completion calls `submitAssignment()` → saves to `classes/{classId}/submissions/{assignmentId}_{studentUid}`
+- Completion screen shows "Úloha odovzdaná!" instead of normal session complete
+
 ### Firestore Collections
 
 ```
@@ -226,7 +235,7 @@ parentCodes/{code}      - Parent code lookup (R-XXXX → {uid, displayName})
 classes/{classId}       - Teacher classes (teacherEmail, schoolId, code T-XXXX)
   /students/{uid}       - Class students with stats
   /assignments/{id}     - Class assignments
-  /submissions/{id}     - Assignment submissions
+  /submissions/{assignmentId}_{studentUid} - Assignment submissions (score, maxScore, completedAt)
 schools/{schoolId}      - Admin schools
   /teachers/{uid}       - School teachers (email, className, classId, classCode)
 admins/{email}          - Admin whitelist (write: false, only via Console)
